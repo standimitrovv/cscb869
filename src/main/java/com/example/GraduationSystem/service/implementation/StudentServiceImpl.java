@@ -35,9 +35,9 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public List<StudentDtoResponse> getStudents(){
-        List<Student> clients = this.studentRepository.findAll();
+        List<Student> students = this.studentRepository.findAll();
 
-        return clients
+        return students
                 .stream()
                 .map(this::mapToDtoResponse)
                 .collect(Collectors.toList());
