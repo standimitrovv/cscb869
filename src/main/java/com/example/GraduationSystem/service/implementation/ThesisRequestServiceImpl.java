@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ThesisRequestServiceImpl implements ThesisRequestService {
@@ -32,6 +33,12 @@ public class ThesisRequestServiceImpl implements ThesisRequestService {
         this.lecturerRepository = lecturerRepository;
 
         this.modelMapper = new ModelMapper();
+    }
+
+    public List<ThesisRequestDtoResponse> getApprovedThesisRequests() {
+        return thesisRequestRepository.findByStatus(ThesisRequestStatus.APPROVED).stream()
+                .map(this::mapToDtoResponse)
+                .toList();
     }
 
     @Override

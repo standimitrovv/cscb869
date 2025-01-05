@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/thesisRequests")
 public class ThesisRequestController {
@@ -16,6 +18,11 @@ public class ThesisRequestController {
     @Autowired
     public ThesisRequestController(ThesisRequestServiceImpl thesisRequestServiceImpl) {
         this.thesisRequestServiceImpl = thesisRequestServiceImpl;
+    }
+
+    @GetMapping("/approved")
+    public List<ThesisRequestDtoResponse> getApprovedThesisRequests(){
+        return this.thesisRequestServiceImpl.getApprovedThesisRequests();
     }
 
     @PostMapping
