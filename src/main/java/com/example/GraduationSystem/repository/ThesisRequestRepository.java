@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface ThesisRequestRepository extends JpaRepository<ThesisRequest, Integer> {
     List<ThesisRequest> findByStatus(ThesisRequestStatus status);
+
+    List<ThesisRequest> findBySupervisorIdAndStatus(int supervisorId, ThesisRequestStatus status);
 }

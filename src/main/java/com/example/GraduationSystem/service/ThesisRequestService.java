@@ -9,6 +9,8 @@ import java.util.List;
 public interface ThesisRequestService {
     List<ThesisRequestDtoResponse> getApprovedThesisRequests();
 
+    List<ThesisRequestDtoResponse> getApprovedThesisRequestsBySupervisor(int supervisorId);
+
     ThesisRequestDtoResponse createThesisRequest(ThesisRequestDto thesisRequestDto);
 
     void updateThesisRequestStatus(int thesisRequestId, UpdateThesisRequestStatusDto newRequestStatusDto);

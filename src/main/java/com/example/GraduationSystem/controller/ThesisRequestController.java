@@ -25,6 +25,11 @@ public class ThesisRequestController {
         return this.thesisRequestServiceImpl.getApprovedThesisRequests();
     }
 
+    @GetMapping("/approved/supervisor")
+    public List<ThesisRequestDtoResponse> getApprovedThesisRequestsBySupervisor(@RequestParam int supervisorId) {
+        return thesisRequestServiceImpl.getApprovedThesisRequestsBySupervisor(supervisorId);
+    }
+
     @PostMapping
     public ThesisRequestDtoResponse createThesisRequest(@RequestBody @Valid ThesisRequestDto thesisRequestDto){
         return this.thesisRequestServiceImpl.createThesisRequest(thesisRequestDto);

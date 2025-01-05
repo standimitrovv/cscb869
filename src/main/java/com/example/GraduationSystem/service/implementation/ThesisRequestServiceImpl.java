@@ -42,6 +42,14 @@ public class ThesisRequestServiceImpl implements ThesisRequestService {
     }
 
     @Override
+    public List<ThesisRequestDtoResponse> getApprovedThesisRequestsBySupervisor(int supervisorId) {
+        return thesisRequestRepository.findBySupervisorIdAndStatus(supervisorId,ThesisRequestStatus.APPROVED)
+                .stream()
+                .map(this::mapToDtoResponse)
+                .toList();
+    }
+
+    @Override
     public ThesisRequestDtoResponse createThesisRequest(ThesisRequestDto thesisRequestDto) {
         Student student = studentRepository.findById(thesisRequestDto.getStudentId())
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + thesisRequestDto.getStudentId()));
