@@ -2,6 +2,7 @@ package com.example.GraduationSystem.dto.thesisDefense;
 
 import com.example.GraduationSystem.dto.lecturer.LecturerDtoResponse;
 import com.example.GraduationSystem.dto.student.StudentDtoResponse;
+import com.example.GraduationSystem.dto.thesis.ThesisDtoResponse;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseGrade;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,4 +26,6 @@ public class ThesisDefenseDtoResponse {
     private List<LecturerDtoResponse> lecturers;
 
     private List<ThesisDefenseGrade> grades;
+
+    private List<ThesisDtoResponse> thesis;
 }

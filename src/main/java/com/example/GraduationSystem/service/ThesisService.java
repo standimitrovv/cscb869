@@ -9,4 +9,6 @@ public interface ThesisService {
     ThesisDtoResponse createThesis(int thesisRequestId, ThesisDto thesisDto);
 
     List<ThesisDtoResponse> getThesisTitlesByKeyword(String keyword);
+
+    List<ThesisDtoResponse> getThesesByGradeRange(double minGrade, double maxGrade);
 }

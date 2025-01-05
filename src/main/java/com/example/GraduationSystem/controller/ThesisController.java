@@ -28,4 +28,9 @@ public class ThesisController {
     public List<ThesisDtoResponse> getThesisTitleByKeyword(@RequestParam String keyword) {
         return this.thesisServiceImpl.getThesisTitlesByKeyword(keyword);
     }
+
+    @GetMapping("/grades")
+    public List<ThesisDtoResponse> getThesesByGradeRange(@RequestParam double minGrade, @RequestParam double maxGrade) {
+        return this.thesisServiceImpl.getThesesByGradeRange(minGrade,maxGrade);
+    }
 }

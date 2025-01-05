@@ -1,6 +1,7 @@
 package com.example.GraduationSystem.model.thesisDefense;
 
 import com.example.GraduationSystem.model.Student;
+import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,9 @@ public class ThesisDefense {
     )
     private List<Lecturer> lecturers;
 
-    @OneToMany(mappedBy = "defense", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "defense", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<ThesisDefenseGrade> grades;
+
+    @OneToMany(mappedBy = "defense", cascade = CascadeType.ALL)
+    private List<Thesis> theses;
 }

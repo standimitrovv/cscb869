@@ -1,5 +1,6 @@
 package com.example.GraduationSystem.model;
 
+import com.example.GraduationSystem.model.thesisDefense.ThesisDefense;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,4 +35,8 @@ public class Thesis {
     @OneToOne
     @JoinColumn(name = "thesis_request_id", referencedColumnName = "id", nullable = false)
     private ThesisRequest thesisRequest;
+
+    @ManyToOne
+    @JoinColumn(name = "defense_id")
+    private ThesisDefense defense;
 }

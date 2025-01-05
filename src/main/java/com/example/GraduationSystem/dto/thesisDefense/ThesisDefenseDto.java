@@ -18,4 +18,7 @@ public class ThesisDefenseDto {
 
     @NotEmpty(message = "No lecturerIds provided")
     private List<Integer> lecturerIds;
+
+    @NotEmpty(message = "No thesisIds provided")
+    private List<Integer> thesisIds;
 }

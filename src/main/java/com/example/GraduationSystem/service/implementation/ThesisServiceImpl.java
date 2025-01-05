@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ThesisServiceImpl implements ThesisService {
@@ -56,6 +57,17 @@ public class ThesisServiceImpl implements ThesisService {
         return thesisRepository.findByTitleContainingIgnoreCase(keyword).stream()
                 .map(this::mapToDtoResponse)
                 .toList();
+    }
+
+    @Override
+    public List<ThesisDtoResponse> getThesesByGradeRange(double minGrade, double maxGrade) {
+        if(minGrade < 2.0 || maxGrade > 6.0) {
+            throw new IllegalArgumentException("A valid grade is between 2.0 and 6.0");
+        }
+
+        return thesisRepository.findAllByGradeRange(minGrade, maxGrade).stream()
+                .map(this::mapToDtoResponse)
+                .collect(Collectors.toList());
     }
 
     private ThesisDtoResponse mapToDtoResponse(Thesis thesis){

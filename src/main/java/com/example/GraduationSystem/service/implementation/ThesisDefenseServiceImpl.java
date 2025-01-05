@@ -4,12 +4,14 @@ import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
 import com.example.GraduationSystem.model.Student;
+import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefense;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseGrade;
 import com.example.GraduationSystem.repository.LecturerRepository;
 import com.example.GraduationSystem.repository.StudentRepository;
 import com.example.GraduationSystem.repository.ThesisDefenseRepository;
+import com.example.GraduationSystem.repository.ThesisRepository;
 import com.example.GraduationSystem.service.ThesisDefenseService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -23,13 +25,15 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
     private final ThesisDefenseRepository thesisDefenseRepository;
     private final StudentRepository studentRepository;
     private final LecturerRepository lecturerRepository;
+    private final ThesisRepository thesisRepository;
 
     private final ModelMapper modelMapper;
 
-    public ThesisDefenseServiceImpl(ThesisDefenseRepository thesisDefenseRepository, StudentRepository studentRepository, LecturerRepository lecturerRepository) {
+    public ThesisDefenseServiceImpl(ThesisDefenseRepository thesisDefenseRepository, StudentRepository studentRepository, LecturerRepository lecturerRepository, ThesisRepository thesisRepository) {
         this.thesisDefenseRepository = thesisDefenseRepository;
         this.studentRepository = studentRepository;
         this.lecturerRepository = lecturerRepository;
+        this.thesisRepository = thesisRepository;
 
         this.modelMapper = new ModelMapper();
     }
@@ -46,13 +50,26 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
             throw new IllegalArgumentException("Some lecturers were not found.");
         }
 
+        List<Thesis> theses = this.thesisRepository.findAllById(thesisDefenseDto.getThesisIds());
+        if (theses.size() != thesisDefenseDto.getThesisIds().size()) {
+            throw new IllegalArgumentException("Some theses were not found.");
+        }
+
         ThesisDefense defense = new ThesisDefense();
 
         defense.setDate(LocalDate.now());
         defense.setStudents(students);
         defense.setLecturers(lecturers);
 
-        return this.mapToDtoResponse(this.thesisDefenseRepository.save(defense));
+        for (Thesis thesis : theses) {
+            thesis.setDefense(defense);
+        }
+
+        //        this.thesisRepository.saveAll(theses);
+        defense.setTheses(theses);
+        ThesisDefense savedDefense = this.thesisDefenseRepository.save(defense);
+
+        return this.mapToDtoResponse(savedDefense);
     }
 
     @Override
