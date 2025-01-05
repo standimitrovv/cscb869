@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/theses")
 public class ThesisController {
@@ -20,5 +22,10 @@ public class ThesisController {
     @PostMapping("/{thesisRequestId}")
     public ThesisDtoResponse createThesis(@PathVariable int thesisRequestId, @RequestBody @Valid ThesisDto thesisDto){
         return this.thesisServiceImpl.createThesis(thesisRequestId, thesisDto);
+    }
+
+    @GetMapping("/titles")
+    public List<ThesisDtoResponse> getThesisTitleByKeyword(@RequestParam String keyword) {
+        return this.thesisServiceImpl.getThesisTitlesByKeyword(keyword);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ThesisServiceImpl implements ThesisService {
@@ -50,9 +51,20 @@ public class ThesisServiceImpl implements ThesisService {
         return this.mapToDtoResponse(this.thesisRepository.save(thesis));
     }
 
+    @Override
+    public List<ThesisDtoResponse> getThesisTitlesByKeyword(String keyword) {
+        return thesisRepository.findByTitleContainingIgnoreCase(keyword).stream()
+                .map(this::mapToDtoResponse)
+                .toList();
+    }
+
     private ThesisDtoResponse mapToDtoResponse(Thesis thesis){
         ThesisDtoResponse dto = this.modelMapper.map(thesis, ThesisDtoResponse.class);
-        dto.setThesisRequest(this.modelMapper.map(dto.getThesisRequest(), ThesisRequestDtoResponse.class));
+
+        ThesisRequestDtoResponse thesisRequest = dto.getThesisRequest();
+        if(thesisRequest != null) {
+            dto.setThesisRequest(thesisRequest);
+        }
 
         return dto;
     }
