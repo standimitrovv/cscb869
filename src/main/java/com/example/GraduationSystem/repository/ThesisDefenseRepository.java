@@ -23,4 +23,21 @@ public interface ThesisDefenseRepository extends JpaRepository<ThesisDefense, In
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+
+    @Query("""
+        SELECT CASE WHEN COUNT(dl) > 0 THEN TRUE ELSE FALSE END
+        FROM ThesisDefense td
+        JOIN td.lecturers dl
+        WHERE dl.id = :lecturerId
+    """)
+    boolean isLecturerAssignedToAnyDefense(@Param("lecturerId") int lecturerId);
+
+    @Query("""
+        SELECT COUNT(DISTINCT tdg.student.id)
+        FROM ThesisDefense td
+        JOIN td.grades tdg
+        JOIN td.lecturers l
+        WHERE l.id = :lecturerId AND tdg.grade >= 3.0
+    """)
+    long countSuccessfulDefensesByLecturer(@Param("lecturerId") int lecturerId);
 }

@@ -18,4 +18,6 @@ public interface ThesisDefenseService {
     ThesisDefenseDtoResponse assignStudentGrade(int defenseId, int studentId, UpdateThesisDefenseGradeDto gradeDto);
 
     List<StudentDtoResponse> getStudentsInDefensePeriod(LocalDate startDate, LocalDate endDate);
+
+    long getSuccessfulDefensesByLecturer(int lecturerId);
 }

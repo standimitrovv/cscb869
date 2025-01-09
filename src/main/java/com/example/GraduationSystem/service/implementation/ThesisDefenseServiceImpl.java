@@ -142,6 +142,17 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
         return students.stream().map((s) -> this.modelMapper.map(s, StudentDtoResponse.class)).toList();
     }
 
+    @Override
+    public long getSuccessfulDefensesByLecturer(int lecturerId) {
+        this.lecturerRepository.findById(lecturerId)
+                .orElseThrow(() -> new IllegalArgumentException("A lecturer with id: " + lecturerId + " doesn't exist."));
+
+        boolean isLecturerAssignedToAnyDefense = this.thesisDefenseRepository.isLecturerAssignedToAnyDefense(lecturerId);
+        if(!isLecturerAssignedToAnyDefense) throw new IllegalArgumentException("A lecturer with id: " + lecturerId + " is not assigned to any thesis defense.");
+
+        return this.thesisDefenseRepository.countSuccessfulDefensesByLecturer(lecturerId);
+    }
+
     private ThesisDefenseDtoResponse mapToDtoResponse(ThesisDefense defense){
         return this.modelMapper.map(defense, ThesisDefenseDtoResponse.class);
     }
