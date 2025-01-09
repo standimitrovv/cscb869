@@ -1,5 +1,6 @@
 package com.example.GraduationSystem.service.implementation;
 
+import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
@@ -132,6 +133,13 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
         defense.getGrades().add(defenseGrade);
 
         return this.mapToDtoResponse(this.thesisDefenseRepository.save(defense));
+    }
+
+    @Override
+    public List<StudentDtoResponse> getStudentsInDefensePeriod(LocalDate startDate, LocalDate endDate) {
+        List<Student> students = this.thesisDefenseRepository.findStudentsAppearedInDefensesBetween(startDate, endDate);
+
+        return students.stream().map((s) -> this.modelMapper.map(s, StudentDtoResponse.class)).toList();
     }
 
     private ThesisDefenseDtoResponse mapToDtoResponse(ThesisDefense defense){

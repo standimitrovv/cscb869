@@ -1,8 +1,12 @@
 package com.example.GraduationSystem.service;
 
+import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public interface ThesisDefenseService {
     ThesisDefenseDtoResponse createDefense(ThesisDefenseDto thesisDefenseDto);
@@ -12,4 +16,6 @@ public interface ThesisDefenseService {
     ThesisDefenseDtoResponse addLecturer(int defenseId, int lecturerId);
 
     ThesisDefenseDtoResponse assignStudentGrade(int defenseId, int studentId, UpdateThesisDefenseGradeDto gradeDto);
+
+    List<StudentDtoResponse> getStudentsInDefensePeriod(LocalDate startDate, LocalDate endDate);
 }
