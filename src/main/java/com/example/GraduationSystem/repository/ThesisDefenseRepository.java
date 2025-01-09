@@ -25,6 +25,16 @@ public interface ThesisDefenseRepository extends JpaRepository<ThesisDefense, In
     );
 
     @Query("""
+        SELECT DISTINCT s
+        FROM ThesisDefense td
+        JOIN td.students s
+        JOIN td.grades g
+        WHERE td.date BETWEEN :startDate AND :endDate
+        AND g.grade >= 3
+    """)
+    List<Student> findGraduatedStudentsInPeriod(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("""
         SELECT CASE WHEN COUNT(dl) > 0 THEN TRUE ELSE FALSE END
         FROM ThesisDefense td
         JOIN td.lecturers dl

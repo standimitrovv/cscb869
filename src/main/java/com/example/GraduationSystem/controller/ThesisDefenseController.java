@@ -7,6 +7,7 @@ import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDt
 import com.example.GraduationSystem.service.implementation.ThesisDefenseServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +55,14 @@ public class ThesisDefenseController {
         return this.thesisDefenseServiceImpl.getStudentsInDefensePeriod(startDate, endDate);
     }
 
-    @GetMapping("/successful/lecturers")
+    @GetMapping("/students/graduates")
+    public List<StudentDtoResponse> getGraduatedStudentsInPeriod(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return this.thesisDefenseServiceImpl.getGraduatedStudentsInPeriod(startDate, endDate);
+    }
+
+    @GetMapping("/lecturers/successful")
     public ResponseEntity<Long> getSuccessfulDefensesByLecturer(@RequestParam int lecturerId) {
         long successfulDefenses = this.thesisDefenseServiceImpl.getSuccessfulDefensesByLecturer(lecturerId);
         return ResponseEntity.ok(successfulDefenses);

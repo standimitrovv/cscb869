@@ -136,6 +136,14 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
     }
 
     @Override
+    public List<StudentDtoResponse> getGraduatedStudentsInPeriod(LocalDate startDate, LocalDate endDate) {
+        return this.thesisDefenseRepository.findGraduatedStudentsInPeriod(startDate, endDate)
+                .stream()
+                .map(s -> this.modelMapper.map(s, StudentDtoResponse.class))
+                .toList();
+    }
+
+    @Override
     public List<StudentDtoResponse> getStudentsInDefensePeriod(LocalDate startDate, LocalDate endDate) {
         List<Student> students = this.thesisDefenseRepository.findStudentsAppearedInDefensesBetween(startDate, endDate);
 
