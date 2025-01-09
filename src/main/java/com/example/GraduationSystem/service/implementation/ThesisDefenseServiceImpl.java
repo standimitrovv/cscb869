@@ -137,6 +137,14 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
 
     @Override
     public List<StudentDtoResponse> getGraduatedStudentsInPeriod(LocalDate startDate, LocalDate endDate) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start date and end date must not be null.");
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date.");
+        }
+
         return this.thesisDefenseRepository.findGraduatedStudentsInPeriod(startDate, endDate)
                 .stream()
                 .map(s -> this.modelMapper.map(s, StudentDtoResponse.class))
@@ -145,9 +153,16 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
 
     @Override
     public List<StudentDtoResponse> getStudentsInDefensePeriod(LocalDate startDate, LocalDate endDate) {
-        List<Student> students = this.thesisDefenseRepository.findStudentsAppearedInDefensesBetween(startDate, endDate);
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException("Start date and end date must not be null.");
+        }
 
-        return students.stream().map((s) -> this.modelMapper.map(s, StudentDtoResponse.class)).toList();
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date.");
+        }
+
+        return this.thesisDefenseRepository.findStudentsAppearedInDefensesBetween(startDate, endDate)
+                .stream().map((s) -> this.modelMapper.map(s, StudentDtoResponse.class)).toList();
     }
 
     @Override
