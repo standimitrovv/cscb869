@@ -3,6 +3,7 @@ package com.example.GraduationSystem.service.implementation;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDto;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
 import com.example.GraduationSystem.dto.thesisReview.UpdateThesisReviewConclusionDto;
+import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.thesisReview.ThesisReview;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class ThesisReviewServiceImpl implements ThesisReviewService {
@@ -61,6 +63,11 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
         review.setConclusion(thesisReviewConclusionDto.getConclusion());
 
         this.thesisReviewRepository.save(review);
+    }
+
+    @Override
+    public List<Student> getStudentsWithNegativeReviews() {
+        return this.thesisReviewRepository.findStudentsWithNegativeReviews();
     }
 
     private ThesisReviewDtoResponse mapToDtoResponse(ThesisReview review){
