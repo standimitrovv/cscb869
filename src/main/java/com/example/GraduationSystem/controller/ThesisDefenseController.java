@@ -4,6 +4,7 @@ import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
+import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseStatusDto;
 import com.example.GraduationSystem.service.implementation.ThesisDefenseServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +30,14 @@ public class ThesisDefenseController {
         return this.thesisDefenseServiceImpl.createDefense(thesisDefenseDto);
     }
 
-    @PatchMapping("/{defenseId}/students/{studentId}")
-    public ThesisDefenseDtoResponse addStudent(@PathVariable int defenseId, @PathVariable int studentId) {
-        return this.thesisDefenseServiceImpl.addStudent(defenseId, studentId);
+    @GetMapping
+    public List<ThesisDefenseDtoResponse> getDefenses() {
+        return this.thesisDefenseServiceImpl.getDefenses();
     }
 
-    @PatchMapping("/{defenseId}/lecturers/{lecturerId}")
-    public ThesisDefenseDtoResponse addLecturer(@PathVariable int defenseId, @PathVariable int lecturerId) {
-        return this.thesisDefenseServiceImpl.addLecturer(defenseId, lecturerId);
-    }
-
-    @PatchMapping("/{defenseId}/students/{studentId}/grade")
-    public ThesisDefenseDtoResponse assignStudentGrade(
-            @PathVariable int defenseId,
-            @PathVariable int studentId,
-            @RequestBody @Valid UpdateThesisDefenseGradeDto thesisDefenseGradeDto
-    ) {
-        return this.thesisDefenseServiceImpl.assignStudentGrade(defenseId, studentId, thesisDefenseGradeDto);
+    @GetMapping("/{defenseId}")
+    public ThesisDefenseDtoResponse getDefense(@PathVariable int defenseId) {
+        return this.thesisDefenseServiceImpl.getDefense(defenseId);
     }
 
     @GetMapping("/students")
@@ -66,5 +58,34 @@ public class ThesisDefenseController {
     public ResponseEntity<Long> getSuccessfulDefensesByLecturer(@RequestParam int lecturerId) {
         long successfulDefenses = this.thesisDefenseServiceImpl.getSuccessfulDefensesByLecturer(lecturerId);
         return ResponseEntity.ok(successfulDefenses);
+    }
+
+    @PatchMapping("/{defenseId}/status")
+    public void updateThesisDefenseStatus(@PathVariable int defenseId, @RequestBody @Valid UpdateThesisDefenseStatusDto status) {
+        this.thesisDefenseServiceImpl.updateDefenseStatus(defenseId, status);
+    }
+
+    @PatchMapping("/{defenseId}/students/{studentId}")
+    public ThesisDefenseDtoResponse addStudent(@PathVariable int defenseId, @PathVariable int studentId) {
+        return this.thesisDefenseServiceImpl.addStudent(defenseId, studentId);
+    }
+
+    @PatchMapping("/{defenseId}/lecturers/{lecturerId}")
+    public ThesisDefenseDtoResponse addLecturer(@PathVariable int defenseId, @PathVariable int lecturerId) {
+        return this.thesisDefenseServiceImpl.addLecturer(defenseId, lecturerId);
+    }
+
+    @PatchMapping("/{defenseId}/students/{studentId}/grade")
+    public ThesisDefenseDtoResponse assignStudentGrade(
+            @PathVariable int defenseId,
+            @PathVariable int studentId,
+            @RequestBody @Valid UpdateThesisDefenseGradeDto thesisDefenseGradeDto
+    ) {
+        return this.thesisDefenseServiceImpl.assignStudentGrade(defenseId, studentId, thesisDefenseGradeDto);
+    }
+
+    @PatchMapping("/{defenseId}")
+    public void cancelDefense(@PathVariable int defenseId){
+        this.thesisDefenseServiceImpl.cancelDefense(defenseId);
     }
 }

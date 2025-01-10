@@ -4,11 +4,13 @@ import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
+import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseStatusDto;
 import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefense;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseGrade;
+import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseStatus;
 import com.example.GraduationSystem.repository.LecturerRepository;
 import com.example.GraduationSystem.repository.StudentRepository;
 import com.example.GraduationSystem.repository.ThesisDefenseRepository;
@@ -61,12 +63,12 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
         defense.setDate(LocalDate.now());
         defense.setStudents(students);
         defense.setLecturers(lecturers);
+        defense.setStatus(ThesisDefenseStatus.PLANNED);
 
         for (Thesis thesis : theses) {
             thesis.setDefense(defense);
         }
 
-        //        this.thesisRepository.saveAll(theses);
         defense.setTheses(theses);
         ThesisDefense savedDefense = this.thesisDefenseRepository.save(defense);
 
@@ -74,9 +76,54 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
     }
 
     @Override
+    public List<ThesisDefenseDtoResponse> getDefenses() {
+        return this.thesisDefenseRepository.findAll()
+                .stream()
+                .map(this::mapToDtoResponse)
+                .toList();
+    }
+
+    @Override
+    public ThesisDefenseDtoResponse getDefense(int defenseId) {
+        ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
+                .orElseThrow(() -> new IllegalArgumentException("Thesis defense with ID: " + defenseId + " was not found."));
+
+        return this.mapToDtoResponse(defense);
+    }
+
+    @Override
+    public void cancelDefense(int defenseId) {
+        ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
+                .orElseThrow(() -> new IllegalArgumentException("Thesis defense with ID: " + defenseId + " was not found."));
+
+        ThesisDefenseStatus status = defense.getStatus();
+        if(status == ThesisDefenseStatus.COMPLETED || status == ThesisDefenseStatus.CANCELED) throw new IllegalArgumentException("You can't cancel a completed or an already canceled defense!");
+
+        defense.setStatus(ThesisDefenseStatus.CANCELED);
+        thesisDefenseRepository.save(defense);
+    }
+
+    public void updateDefenseStatus(int defenseId, UpdateThesisDefenseStatusDto status) {
+        ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
+                .orElseThrow(() -> new IllegalArgumentException("Thesis defense with ID: " + defenseId + " was not found."));
+
+        if(defense.getStatus() == ThesisDefenseStatus.COMPLETED || defense.getStatus() == ThesisDefenseStatus.CANCELED) {
+            throw new IllegalArgumentException("You can't change the status of an already completed or canceled defense!");
+        }
+
+        defense.setStatus(status.getStatus());
+        this.thesisDefenseRepository.save(defense);
+    }
+
+    @Override
     public ThesisDefenseDtoResponse addStudent(int defenseId, int studentId) {
         ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis defense not found with ID: " + defenseId));
+
+        ThesisDefenseStatus status = defense.getStatus();
+        if(status == ThesisDefenseStatus.COMPLETED || status == ThesisDefenseStatus.CANCELED) {
+            throw new IllegalArgumentException("You can't add a student to an already completed or canceled defense!");
+        }
 
         Student student = this.studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + studentId));
@@ -90,6 +137,11 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
     public ThesisDefenseDtoResponse addLecturer(int defenseId, int lecturerId) {
         ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis defense not found with ID: " + defenseId));
+
+        ThesisDefenseStatus status = defense.getStatus();
+        if(status == ThesisDefenseStatus.COMPLETED || status == ThesisDefenseStatus.CANCELED) {
+            throw new IllegalArgumentException("You can't add a lecturer to an already completed or canceled defense!");
+        }
 
         Lecturer lecturer = this.lecturerRepository.findById(lecturerId)
                 .orElseThrow(() -> new IllegalArgumentException("Lecturer not found with ID: " + lecturerId));
@@ -107,6 +159,11 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
 
         ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis defense not found with ID: " + defenseId));
+
+        ThesisDefenseStatus status = defense.getStatus();
+        if(status == ThesisDefenseStatus.COMPLETED || status == ThesisDefenseStatus.CANCELED) {
+            throw new IllegalArgumentException("You can't assign a grade to an already completed or canceled defense!");
+        }
 
         this.studentRepository.findById(studentId)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + studentId));

@@ -23,6 +23,10 @@ public class ThesisDefense {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name="status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ThesisDefenseStatus status;
+
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
