@@ -78,10 +78,38 @@ public class ThesisRequestServiceImpl implements ThesisRequestService {
     @Override
     public void updateThesisRequestStatus(int thesisRequestId, UpdateThesisRequestStatusDto newRequestStatusDto) {
         ThesisRequest request = thesisRequestRepository.findById(thesisRequestId)
-                .orElseThrow(() -> new RuntimeException("The thesis request with id: " + thesisRequestId + " was not found"));
+                .orElseThrow(() -> new IllegalArgumentException("The thesis request with id: " + thesisRequestId + " was not found"));
+
+        if(request.getStatus() != ThesisRequestStatus.PENDING) {
+            throw new IllegalArgumentException("You can't change the status of an already approved, rejected or cancelled thesis request");
+        }
 
         request.setStatus(newRequestStatusDto.getThesisRequestStatus());
         thesisRequestRepository.save(request);
+    }
+
+    @Override
+    public List<ThesisRequestDtoResponse> getThesisRequests() {
+        return this.thesisRequestRepository.findAll()
+                .stream()
+                .map(this::mapToDtoResponse)
+                .toList();
+    }
+
+    @Override
+    public ThesisRequestDtoResponse getThesisRequest(int thesisRequestId) {
+        ThesisRequest request = thesisRequestRepository.findById(thesisRequestId)
+                .orElseThrow(() -> new IllegalArgumentException("The thesis request with id: " + thesisRequestId + " was not found"));
+
+        return this.mapToDtoResponse(request);
+    }
+
+    @Override
+    public List<ThesisRequestDtoResponse> getStudentThesisRequests(int studentId) {
+        return this.thesisRequestRepository.findStudentTheses(studentId)
+                .stream()
+                .map(this::mapToDtoResponse)
+                .toList();
     }
 
     private ThesisRequestDtoResponse mapToDtoResponse(ThesisRequest request){

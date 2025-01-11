@@ -38,7 +38,7 @@ public class ThesisServiceImpl implements ThesisService {
                 .orElseThrow(() -> new IllegalArgumentException("Thesis request not found with ID: " + thesisRequestId));
 
         if (thesisRequest.getStatus() != ThesisRequestStatus.APPROVED) {
-            throw new IllegalStateException("The thesis request is not approved yet.");
+            throw new IllegalStateException("The thesis request has to approved first");
         }
 
         Thesis thesis = new Thesis();
@@ -47,7 +47,6 @@ public class ThesisServiceImpl implements ThesisService {
         thesis.setContent(thesisDto.getContent());
         thesis.setUploadDate(LocalDate.now());
         thesis.setThesisRequest(thesisRequest);
-//        thesis.setReviews(new ArrayList<>());
 
         return this.mapToDtoResponse(this.thesisRepository.save(thesis));
     }

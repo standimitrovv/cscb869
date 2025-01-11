@@ -84,7 +84,7 @@ public class ThesisDefenseController {
         return this.thesisDefenseServiceImpl.assignStudentGrade(defenseId, studentId, thesisDefenseGradeDto);
     }
 
-    @PatchMapping("/{defenseId}")
+    @DeleteMapping("/{defenseId}")
     public void cancelDefense(@PathVariable int defenseId){
         this.thesisDefenseServiceImpl.cancelDefense(defenseId);
     }

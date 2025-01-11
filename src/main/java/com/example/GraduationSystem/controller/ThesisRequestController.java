@@ -3,6 +3,7 @@ package com.example.GraduationSystem.controller;
 import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDto;
 import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDtoResponse;
 import com.example.GraduationSystem.dto.thesisRequest.UpdateThesisRequestStatusDto;
+import com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus;
 import com.example.GraduationSystem.service.implementation.ThesisRequestServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,21 @@ public class ThesisRequestController {
         return this.thesisRequestServiceImpl.getApprovedThesisRequests();
     }
 
+    @GetMapping
+    public List<ThesisRequestDtoResponse> getThesisRequests() {
+        return this.thesisRequestServiceImpl.getThesisRequests();
+    }
+
+    @GetMapping("/{thesisRequestId}")
+    public ThesisRequestDtoResponse getThesisRequest(@PathVariable int thesisRequestId) {
+        return this.thesisRequestServiceImpl.getThesisRequest(thesisRequestId);
+    }
+
+    @GetMapping("/students/{studentId}")
+    public List<ThesisRequestDtoResponse> getStudentThesisRequests(@PathVariable int studentId) {
+        return this.thesisRequestServiceImpl.getStudentThesisRequests(studentId);
+    }
+
     @GetMapping("/approved/supervisor")
     public List<ThesisRequestDtoResponse> getApprovedThesisRequestsBySupervisor(@RequestParam int supervisorId) {
         return thesisRequestServiceImpl.getApprovedThesisRequestsBySupervisor(supervisorId);
@@ -38,5 +54,10 @@ public class ThesisRequestController {
     @PatchMapping("/{thesisRequestId}")
     public void updateThesisRequestStatus(@PathVariable int thesisRequestId, @RequestBody @Valid UpdateThesisRequestStatusDto thesisRequestStatusDto) {
         this.thesisRequestServiceImpl.updateThesisRequestStatus(thesisRequestId, thesisRequestStatusDto);
+    }
+
+    @DeleteMapping("/{thesisRequestId}")
+    public void cancelThesisRequest(@PathVariable int thesisRequestId) {
+        this.thesisRequestServiceImpl.updateThesisRequestStatus(thesisRequestId, new UpdateThesisRequestStatusDto(ThesisRequestStatus.CANCELLED));
     }
 }
