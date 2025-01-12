@@ -1,9 +1,9 @@
 package com.example.GraduationSystem.service.implementation;
 
-import com.example.GraduationSystem.dto.student.StudentDto;
 import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.exception.student.StudentNotFoundException;
 import com.example.GraduationSystem.model.Student;
+import com.example.GraduationSystem.model.user.User;
 import com.example.GraduationSystem.repository.StudentRepository;
 import com.example.GraduationSystem.service.StudentService;
 import org.modelmapper.ModelMapper;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,13 +26,17 @@ public class StudentServiceImpl implements StudentService {
         this.modelMapper = new ModelMapper();
     }
 
-    public StudentDtoResponse createStudent(StudentDto studentDto) {
+    public Student createStudent(String name, User user) {
+        if(name.isEmpty() || user == null) {
+            throw new IllegalArgumentException("The name or the user is empty!");
+        }
+
         Student student = new Student();
+        student.setName(name);
+        student.setFacultyNumber(UUID.randomUUID().toString());
+        student.setUser(user);
 
-        student.setName(studentDto.getName());
-        student.setFacultyNumber(studentDto.getFacultyNumber());
-
-        return this.mapToDtoResponse(this.studentRepository.save(student));
+        return this.studentRepository.save(student);
     }
 
     public List<StudentDtoResponse> getStudents(){
@@ -45,15 +50,6 @@ public class StudentServiceImpl implements StudentService {
 
     public StudentDtoResponse getStudent(int studentId) {
         return this.mapToDtoResponse(this.findStudentByIdOrThrow(studentId));
-    }
-
-    public StudentDtoResponse updateStudent(int studentId, StudentDto studentDto){
-        Student student = this.findStudentByIdOrThrow(studentId);
-
-        student.setName(studentDto.getName());
-        student.setFacultyNumber(student.getFacultyNumber());
-
-        return this.mapToDtoResponse(student);
     }
 
     public void deleteStudent(int studentId){

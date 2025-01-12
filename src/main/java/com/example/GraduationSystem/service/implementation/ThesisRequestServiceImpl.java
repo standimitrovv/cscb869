@@ -80,6 +80,10 @@ public class ThesisRequestServiceImpl implements ThesisRequestService {
         ThesisRequest request = thesisRequestRepository.findById(thesisRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("The thesis request with id: " + thesisRequestId + " was not found"));
 
+        if(request.getStatus() == newRequestStatusDto.getThesisRequestStatus()) {
+            throw new IllegalArgumentException("You have to provide a different status than the current one!");
+        }
+
         if(request.getStatus() != ThesisRequestStatus.PENDING) {
             throw new IllegalArgumentException("You can't change the status of an already approved, rejected or cancelled thesis request");
         }

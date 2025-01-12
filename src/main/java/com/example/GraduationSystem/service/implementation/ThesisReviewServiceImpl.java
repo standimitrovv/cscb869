@@ -60,6 +60,10 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
         ThesisReview review = this.thesisReviewRepository.findById(thesisReviewId)
                 .orElseThrow(() -> new IllegalArgumentException("A thesis review not found with ID: " + thesisReviewId));
 
+        if(review.getConclusion() == thesisReviewConclusionDto.getConclusion()) {
+            throw new IllegalArgumentException("You have to provide a different conclusion than the current one!");
+        }
+
         review.setConclusion(thesisReviewConclusionDto.getConclusion());
 
         this.thesisReviewRepository.save(review);

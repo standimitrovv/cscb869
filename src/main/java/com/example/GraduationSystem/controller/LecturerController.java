@@ -1,7 +1,7 @@
 package com.example.GraduationSystem.controller;
 
-import com.example.GraduationSystem.dto.lecturer.LecturerDto;
 import com.example.GraduationSystem.dto.lecturer.LecturerDtoResponse;
+import com.example.GraduationSystem.dto.lecturer.UpdateLecturerPositionDto;
 import com.example.GraduationSystem.service.implementation.LecturerServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,6 @@ public class LecturerController {
         this.lecturerServiceImpl = lecturerServiceImpl;
     }
 
-    @PostMapping
-    public LecturerDtoResponse createLecturer(@RequestBody @Valid LecturerDto lecturer){
-        return this.lecturerServiceImpl.createLecturer(lecturer);
-    }
-
     @GetMapping
     public List<LecturerDtoResponse> getLecturers() {
         return this.lecturerServiceImpl.getLecturers();
@@ -36,9 +31,9 @@ public class LecturerController {
     }
 
     @PatchMapping("/{lecturerId}")
-    public LecturerDtoResponse updateLecturer(@PathVariable int lecturerId,
-                                            @RequestBody @Valid LecturerDto lecturerDto) {
-        return this.lecturerServiceImpl.updateLecturer(lecturerId, lecturerDto);
+    public LecturerDtoResponse updateLecturerPosition(@PathVariable int lecturerId,
+                                            @RequestBody @Valid UpdateLecturerPositionDto dto) {
+        return this.lecturerServiceImpl.updateLecturerPosition(lecturerId, dto);
     }
 
     @DeleteMapping("/{lecturerId}")

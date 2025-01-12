@@ -1,6 +1,9 @@
 package com.example.GraduationSystem.dto.lecturer;
 
 import com.example.GraduationSystem.model.lecturer.LecturerPosition;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LecturerDtoResponse {
-    private int id;
-
-    private String name;
-
+public class UpdateLecturerPositionDto {
+    @NotNull(message = "The 'position' field cannot be null!")
+    @Enumerated(EnumType.STRING)
     private LecturerPosition position;
 }

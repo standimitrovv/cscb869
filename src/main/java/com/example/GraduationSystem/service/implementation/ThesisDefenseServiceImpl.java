@@ -107,6 +107,10 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
         ThesisDefense defense = this.thesisDefenseRepository.findById(defenseId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis defense with ID: " + defenseId + " was not found."));
 
+        if(status.getStatus() == defense.getStatus()) {
+            throw new IllegalArgumentException("You have to provide a different status than the current one!");
+        }
+
         if(defense.getStatus() == ThesisDefenseStatus.COMPLETED || defense.getStatus() == ThesisDefenseStatus.CANCELED) {
             throw new IllegalArgumentException("You can't change the status of an already completed or canceled defense!");
         }

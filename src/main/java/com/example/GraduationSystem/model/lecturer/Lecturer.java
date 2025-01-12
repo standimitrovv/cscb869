@@ -1,5 +1,6 @@
 package com.example.GraduationSystem.model.lecturer;
 
+import com.example.GraduationSystem.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,5 +23,9 @@ public class Lecturer {
 
     @Column(name = "position", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Position position;
+    private LecturerPosition position;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }

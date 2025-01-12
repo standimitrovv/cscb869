@@ -1,9 +1,11 @@
 package com.example.GraduationSystem.service.implementation;
 
-import com.example.GraduationSystem.dto.lecturer.LecturerDto;
 import com.example.GraduationSystem.dto.lecturer.LecturerDtoResponse;
+import com.example.GraduationSystem.dto.lecturer.UpdateLecturerPositionDto;
 import com.example.GraduationSystem.exception.lecturer.LecturerNotFoundException;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
+import com.example.GraduationSystem.model.lecturer.LecturerPosition;
+import com.example.GraduationSystem.model.user.User;
 import com.example.GraduationSystem.repository.LecturerRepository;
 import com.example.GraduationSystem.service.LecturerService;
 import org.modelmapper.ModelMapper;
@@ -24,14 +26,17 @@ public class LecturerServiceImpl implements LecturerService {
         this.modelMapper = new ModelMapper();
     }
 
-    @Override
-    public LecturerDtoResponse createLecturer(LecturerDto lecturerDto) {
+    public Lecturer createLecturer(String name, User user) {
+        if(name.isEmpty() || user == null) {
+            throw new IllegalArgumentException("The name or the user is empty!");
+        }
+
         Lecturer lecturer = new Lecturer();
+        lecturer.setName(name);
+        lecturer.setPosition(LecturerPosition.ASSISTANT);
+        lecturer.setUser(user);
 
-        lecturer.setName(lecturerDto.getName());
-        lecturer.setPosition(lecturerDto.getPosition());
-
-        return this.mapToDtoResponse(this.lecturerRepository.save(lecturer));
+        return this.lecturerRepository.save(lecturer);
     }
 
     @Override
@@ -50,13 +55,16 @@ public class LecturerServiceImpl implements LecturerService {
     }
 
     @Override
-    public LecturerDtoResponse updateLecturer(int lecturerId, LecturerDto lecturerDto) {
+    public LecturerDtoResponse updateLecturerPosition(int lecturerId, UpdateLecturerPositionDto positionDto) {
         Lecturer lecturer = this.findLecturerByIdOrThrow(lecturerId);
 
-        lecturer.setName(lecturerDto.getName());
-        lecturer.setPosition(lecturer.getPosition());
+        if(lecturer.getPosition() == positionDto.getPosition()){
+            throw new IllegalArgumentException("You have to provide a different position than the current one!");
+        }
 
-        return this.mapToDtoResponse(lecturer);
+        lecturer.setPosition(positionDto.getPosition());
+
+        return this.mapToDtoResponse(lecturerRepository.save(lecturer));
     }
 
     @Override

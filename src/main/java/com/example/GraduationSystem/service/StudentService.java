@@ -1,18 +1,17 @@
 package com.example.GraduationSystem.service;
 
-import com.example.GraduationSystem.dto.student.StudentDto;
 import com.example.GraduationSystem.dto.student.StudentDtoResponse;
+import com.example.GraduationSystem.model.Student;
+import com.example.GraduationSystem.model.user.User;
 
 import java.util.List;
 
 public interface StudentService {
-    StudentDtoResponse createStudent(StudentDto studentDto);
+    Student createStudent(String name, User user);
 
     List<StudentDtoResponse> getStudents();
 
     StudentDtoResponse getStudent(int studentId);
-
-    StudentDtoResponse updateStudent(int studentId, StudentDto studentDto);
 
     void deleteStudent(int studentId);
 }

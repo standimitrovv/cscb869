@@ -1,6 +1,6 @@
 package com.example.GraduationSystem.model.lecturer;
 
-public enum Position {
+public enum LecturerPosition {
     ASSISTANT,
     CHIEF_ASSISTANT,
     ASSOCIATE_PROFESSOR,

@@ -1,5 +1,6 @@
 package com.example.GraduationSystem.model;
 
+import com.example.GraduationSystem.model.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,4 +23,8 @@ public class Student {
 
     @Column(name="facultyNumber", nullable = false, unique = true)
     private String facultyNumber;
+
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
