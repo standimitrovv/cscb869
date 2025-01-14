@@ -1,10 +1,9 @@
 package com.example.GraduationSystem.dto.session;
 
 import com.example.GraduationSystem.model.user.UserRole;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +25,8 @@ public class RegistrationRequestDto {
     )
     private String password;
 
-    @NotBlank(message="The 'role' cannot be empty!")
+    @NotNull(message = "The 'role' field cannot be null!")
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @NotBlank(message="The 'firstName' field cannot be empty!")

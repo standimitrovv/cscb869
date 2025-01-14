@@ -1,28 +1,29 @@
 package com.example.GraduationSystem.service.implementation;
 
-
 import com.example.GraduationSystem.dto.session.UserDto;
 import com.example.GraduationSystem.dto.session.UserDtoResponse;
 import com.example.GraduationSystem.model.user.User;
 import com.example.GraduationSystem.repository.UserRepository;
+import com.example.GraduationSystem.service.PasswordService;
 import com.example.GraduationSystem.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final PasswordService passwordService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, PasswordService passwordService) {
         this.userRepository = userRepository;
+        this.passwordService = passwordService;
 
-        this.passwordEncoder = passwordEncoder;
         this.modelMapper = new ModelMapper();
     }
 
@@ -34,10 +35,19 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setEmail(dto.getEmail());
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setPassword(passwordService.encodePassword(dto.getPassword()));
         user.setRole(dto.getRole());
 
         return userRepository.save(user);
+    }
+
+    public Optional<User> findUserByEmail(String email) {
+        return this.userRepository.findByEmail(email);
+    }
+
+    @Override
+    public User saveUser(User user) {
+        return this.userRepository.save(user);
     }
 
     public UserDtoResponse mapToDtoResponse(User user) {

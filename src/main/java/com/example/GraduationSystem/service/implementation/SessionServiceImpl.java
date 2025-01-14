@@ -12,7 +12,14 @@ import com.example.GraduationSystem.service.SessionService;
 import com.example.GraduationSystem.service.StudentService;
 import com.example.GraduationSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class SessionServiceImpl implements SessionService {
@@ -34,19 +41,32 @@ public class SessionServiceImpl implements SessionService {
 
         if (requestDto.getRole() == UserRole.STUDENT) {
             String name = requestDto.getFirstName() + " " + requestDto.getLastName();
-            Student s = studentService.createStudent(name, user);
+            Student s = this.studentService.createStudent(name, user);
             user.setStudent(s);
         } else if (requestDto.getRole() == UserRole.LECTURER) {
             String name = requestDto.getFirstName() + " " + requestDto.getLastName();
-            Lecturer l = lecturerService.createLecturer(name, user);
+            Lecturer l = this.lecturerService.createLecturer(name, user);
             user.setLecturer(l);
         }
+
+        this.userService.saveUser(user);
 
         return this.userService.mapToDtoResponse(user);
     }
 
     @Override
-    public UserDtoResponse logUser() {
-        return null;
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = this.userService.findUserByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                mapRolesToAuthorities(user.getRole())
+        );
+    }
+
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(UserRole role) {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 }
