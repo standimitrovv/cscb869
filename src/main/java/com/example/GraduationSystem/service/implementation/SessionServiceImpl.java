@@ -39,17 +39,16 @@ public class SessionServiceImpl implements SessionService {
         UserDto userDto = new UserDto(requestDto.getEmail(), requestDto.getPassword(), requestDto.getRole());
         User user = userService.createUser(userDto);
 
+        String name = requestDto.getFirstName() + " " + requestDto.getLastName();
         if (requestDto.getRole() == UserRole.STUDENT) {
-            String name = requestDto.getFirstName() + " " + requestDto.getLastName();
-            Student s = this.studentService.createStudent(name, user);
-            user.setStudent(s);
+            Student student = this.studentService.createStudent(name, user);
+            user.setStudent(student);
+            this.userService.saveUser(user);
         } else if (requestDto.getRole() == UserRole.LECTURER) {
-            String name = requestDto.getFirstName() + " " + requestDto.getLastName();
-            Lecturer l = this.lecturerService.createLecturer(name, user);
-            user.setLecturer(l);
+            Lecturer lecturer = this.lecturerService.createLecturer(name, user);
+            user.setLecturer(lecturer);
+            this.userService.saveUser(user);
         }
-
-        this.userService.saveUser(user);
 
         return this.userService.mapToDtoResponse(user);
     }
