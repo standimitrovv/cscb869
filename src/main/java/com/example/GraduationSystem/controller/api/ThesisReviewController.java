@@ -1,4 +1,4 @@
-package com.example.GraduationSystem.controller;
+package com.example.GraduationSystem.controller.api;
 
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDto;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/thesisReviews")
+@RequestMapping("/api/thesisReviews")
 public class ThesisReviewController {
     private final ThesisReviewServiceImpl thesisReviewServiceImpl;
 

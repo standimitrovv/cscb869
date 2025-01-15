@@ -1,4 +1,4 @@
-package com.example.GraduationSystem.controller;
+package com.example.GraduationSystem.controller.api;
 
 import com.example.GraduationSystem.dto.lecturer.LecturerDtoResponse;
 import com.example.GraduationSystem.dto.lecturer.UpdateLecturerPositionDto;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/lecturers")
+@RequestMapping("/api/lecturers")
 public class LecturerController {
     private final LecturerServiceImpl lecturerServiceImpl;
 

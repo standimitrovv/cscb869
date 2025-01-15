@@ -1,4 +1,4 @@
-package com.example.GraduationSystem.controller;
+package com.example.GraduationSystem.controller.api;
 
 import com.example.GraduationSystem.auth.Jwt;
 import com.example.GraduationSystem.dto.session.LoginRequestDto;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/session")
+@RequestMapping("/api/session")
 public class SessionController {
     private final SessionServiceImpl sessionService;
 

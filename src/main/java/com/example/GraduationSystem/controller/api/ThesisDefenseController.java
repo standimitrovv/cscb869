@@ -1,4 +1,4 @@
-package com.example.GraduationSystem.controller;
+package com.example.GraduationSystem.controller.api;
 
 import com.example.GraduationSystem.dto.student.StudentDtoResponse;
 import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/thesisDefenses")
+@RequestMapping("/api/thesisDefenses")
 public class ThesisDefenseController {
     private final ThesisDefenseServiceImpl thesisDefenseServiceImpl;
 
