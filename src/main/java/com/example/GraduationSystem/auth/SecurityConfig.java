@@ -17,14 +17,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final JwtAuthFilter jwtAuthenticationFilter;
+    private final JwtFilter jwtFilter;
     private final SessionService sessionService;
     private final PasswordEncoderUtil passwordEncoderUtil;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthenticationFilter, SessionService sessionService, PasswordEncoderUtil passwordEncoderUtil, PasswordEncoderUtil passwordEncoderUtil1) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    public SecurityConfig(JwtFilter jwtFilter, SessionService sessionService, PasswordEncoderUtil passwordEncoderUtil) {
+        this.jwtFilter = jwtFilter;
         this.sessionService = sessionService;
-        this.passwordEncoderUtil = passwordEncoderUtil1;
+        this.passwordEncoderUtil = passwordEncoderUtil;
     }
 
     @Bean
@@ -32,26 +32,32 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/session/**").permitAll()
-                        .requestMatchers("/**").hasRole(UserRole.ADMIN.toString())
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/home").permitAll()
                         .requestMatchers(HttpMethod.GET, "/lecturers/{lecturerId}").hasRole(UserRole.LECTURER.toString())
+                        .requestMatchers("/lecturers/**").hasRole(UserRole.ADMIN.toString())
                         .requestMatchers(HttpMethod.GET, "/students/{studentId}").hasRole(UserRole.STUDENT.toString())
+                        .requestMatchers("/students/**").hasRole(UserRole.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/theses/{thesisRequestId}").hasRole(UserRole.STUDENT.toString())
                         .requestMatchers(HttpMethod.GET, "/theses/**").hasRole(UserRole.LECTURER.toString())
+                        .requestMatchers( "/theses/**").hasRole(UserRole.ADMIN.toString())
                         .requestMatchers(HttpMethod.GET, "/thesisDefenses/{defenseId}").hasRole(UserRole.STUDENT.toString())
                         .requestMatchers(HttpMethod.POST, "/thesisDefenses/**").hasRole(UserRole.LECTURER.toString())
                         .requestMatchers(HttpMethod.PATCH, "/thesisDefenses/**").hasRole(UserRole.LECTURER.toString())
                         .requestMatchers(HttpMethod.DELETE, "/thesisDefenses/**").hasRole(UserRole.LECTURER.toString())
+                        .requestMatchers("/thesisDefenses/**").hasRole(UserRole.ADMIN.toString())
                         .requestMatchers(HttpMethod.GET, "/thesisRequests/approved").permitAll()
                         .requestMatchers(HttpMethod.GET, "/thesisRequests/{thesisRequestId}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/thesisRequests/students/{studentId").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/thesisRequests/students/{studentId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/thesisRequests").hasRole(UserRole.LECTURER.toString())
                         .requestMatchers(HttpMethod.PATCH, "/thesisRequests/{thesisRequestId}").hasRole(UserRole.LECTURER.toString())
                         .requestMatchers(HttpMethod.DELETE, "/thesisRequests/{thesisRequestId}").hasRole(UserRole.LECTURER.toString())
+                        .requestMatchers("/thesisRequests/**").hasRole(UserRole.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST, "/thesisReviews").hasRole(UserRole.LECTURER.toString())
                         .requestMatchers(HttpMethod.PATCH, "/thesisReviews/**").hasRole(UserRole.LECTURER.toString())
-//                      .anyRequest().authenticated()
+                        .requestMatchers( "/thesisReviews/**").hasRole(UserRole.ADMIN.toString())
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
