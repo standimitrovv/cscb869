@@ -83,7 +83,7 @@
 
   <h1>Upload Thesis</h1>
 
-  <form th:action="@{/theses}" th:object="${thesisDto}" method="post">
+  <form th:action="@{/theses/upload}" th:object="${thesisDto}" method="post">
     <input type="hidden" name="requestId" th:value="${requestId}">
 
     <label for="title">Title:</label>

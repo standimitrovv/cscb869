@@ -4,9 +4,11 @@ import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.thesisReview.ThesisReview;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ThesisReviewRepository extends JpaRepository<ThesisReview, Integer> {
@@ -19,4 +21,12 @@ public interface ThesisReviewRepository extends JpaRepository<ThesisReview, Inte
     WHERE r.conclusion = 'NEGATIVE'
 """)
     List<Student> findStudentsWithNegativeReviews();
+
+    @Query("""
+    SELECT tr
+    FROM ThesisReview tr
+    JOIN tr.thesis t
+    WHERE t.id = :thesisId
+""")
+    Optional<ThesisReview> getThesisReviewByThesisId(@Param("thesisId") int thesisId);
 }

@@ -1,8 +1,5 @@
-package com.example.GraduationSystem.dto.thesisReview;
+package com.example.GraduationSystem.dto.thesis;
 
-
-import com.example.GraduationSystem.dto.lecturer.LecturerDtoResponse;
-import com.example.GraduationSystem.dto.thesis.ThesisDtoResponse;
 import com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,16 +12,20 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ThesisReviewDtoResponse {
+public class WebThesisDtoResponse {
     private int id;
+
+    private String title;
 
     private String content;
 
     private LocalDate uploadDate;
 
-    private ThesisReviewConclusion conclusion;
+    private LocalDate reviewDate;
 
-    private ThesisDtoResponse thesis;
+    private String reviewContent;
 
-    private LecturerDtoResponse reviewer;
+    private ThesisReviewConclusion reviewConclusion;
+
+    private String reviewer;
 }

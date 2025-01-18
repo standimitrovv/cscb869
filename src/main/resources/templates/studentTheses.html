@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Theses</title>
+
+    <style>
+        table {
+         width: 100%;
+         border-collapse: collapse;
+         margin: 20px 0;
+         font-size: 18px;
+         text-align: left;
+     }
+     th, td {
+         border: 1px solid #ddd;
+         padding: 12px 15px;
+     }
+     th {
+         background-color: #4CAF50;
+         color: white;
+     }
+     tr:nth-child(even) {
+         background-color: #f2f2f2;
+     }
+     tr:hover {
+         background-color: #ddd;
+     }
+     a {
+         text-decoration: none;
+         color: white;
+         background-color: #4CAF50;
+         padding: 8px 12px;
+         border-radius: 4px;
+     }
+     a:hover {
+         background-color: #45a049;
+     }
+    </style>
+</head>
+<body>
+  <div class="mt-2">
+    <a th:href="@{/home}">Home</a>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Submission Date</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="thesis : ${theses}">
+      <td th:text="${thesis.title}"></td>
+      <td th:text="${thesis.content}"></td>
+      <td th:text="${thesis.uploadDate}"></td>
+      <td>
+        <a th:href="@{/theses/details/{id}(id=${thesis.id})}" class="btn btn-primary">View Details</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</body>
+</html>

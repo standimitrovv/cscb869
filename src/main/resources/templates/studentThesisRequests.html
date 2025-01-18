@@ -43,9 +43,7 @@
   <a th:href="@{/home}">Home</a>
 </div>
 
-<h1>My Thesis Requests</h1>
-
-<table border="1">
+<table>
   <thead>
   <tr>
     <th>Topic</th>
@@ -67,7 +65,7 @@
     <td th:text="${request.status}"></td>
     <td>
       <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED}"
-         th:href="@{/theses(requestId=${request.id})}">
+         th:href="@{/theses/upload(requestId=${request.id})}">
         Upload Thesis
       </a>
     </td>

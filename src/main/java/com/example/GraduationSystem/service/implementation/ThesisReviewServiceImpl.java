@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ThesisReviewServiceImpl implements ThesisReviewService {
@@ -72,6 +73,13 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
     @Override
     public List<Student> getStudentsWithNegativeReviews() {
         return this.thesisReviewRepository.findStudentsWithNegativeReviews();
+    }
+
+    @Override
+    public Optional<ThesisReviewDtoResponse> getThesisReviewByThesisId(int thesisId) {
+        return this.thesisReviewRepository
+                .getThesisReviewByThesisId(thesisId)
+                .map(this::mapToDtoResponse);
     }
 
     private ThesisReviewDtoResponse mapToDtoResponse(ThesisReview review){

@@ -20,4 +20,13 @@ public interface ThesisRepository extends JpaRepository<Thesis, Integer> {
     WHERE g.grade BETWEEN :minGrade AND :maxGrade
 """, nativeQuery = true)
     List<Thesis> findAllByGradeRange(@Param("minGrade") double minGrade, @Param("maxGrade") double maxGrade);
+
+    @Query("""
+        SELECT t
+        FROM Thesis t
+        JOIN t.thesisRequest tr
+        JOIN tr.student s
+        WHERE s.id = :studentId
+    """)
+    List<Thesis> findAllStudentTheses(@Param("studentId") int studentId);
 }

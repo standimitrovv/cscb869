@@ -33,6 +33,14 @@ public class ThesisServiceImpl implements ThesisService {
     }
 
     @Override
+    public ThesisDtoResponse getThesis(int thesisId) {
+        Thesis thesis = this.thesisRepository.findById(thesisId)
+                .orElseThrow(() -> new IllegalArgumentException("Thesis with ID: " + thesisId + " was not found!"));
+
+        return this.mapToDtoResponse(thesis);
+    }
+
+    @Override
     public ThesisDtoResponse createThesis(int thesisRequestId, ThesisDto thesisDto) {
         ThesisRequest thesisRequest = thesisRequestRepository.findById(thesisRequestId)
                 .orElseThrow(() -> new IllegalArgumentException("Thesis request not found with ID: " + thesisRequestId));
@@ -68,6 +76,15 @@ public class ThesisServiceImpl implements ThesisService {
                 .map(this::mapToDtoResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ThesisDtoResponse> getStudentTheses(int studentId) {
+        return this.thesisRepository.findAllStudentTheses(studentId)
+                .stream()
+                .map(this::mapToDtoResponse)
+                .toList();
+    }
+
 
     private ThesisDtoResponse mapToDtoResponse(Thesis thesis){
         ThesisDtoResponse dto = this.modelMapper.map(thesis, ThesisDtoResponse.class);

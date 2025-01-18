@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Thesis Details</title>
+</head>
+<body>
+    <div class="mt-2">
+        <a th:href="@{/home}">Home</a>
+    </div>
+
+    <div>
+        <h2 th:text="${thesis.title}"></h2>
+        <p><strong>Content:</strong> <span th:text="${thesis.content}"></span></p>
+        <p><strong>Upload date:</strong> <span th:text="${thesis.uploadDate}"></span></p>
+    </div>
+
+    <div th:if="${thesis.reviewDate != null && thesis.reviewConclusion != T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
+        <h3>Review</h3>
+        <p><strong>Reviewer:</strong> <span th:text="${thesis.reviewer}"></span></p>
+        <p><strong>Review Date:</strong> <span th:text="${thesis.reviewDate}"></span></p>
+        <p><strong>Review:</strong> <span th:text="${thesis.reviewContent}"></span></p>
+        <p><strong>Conclusion:</strong> <span th:text="${thesis.reviewConclusion}"></span></p>
+    </div>
+
+    <div th:if="${thesis.reviewDate == null}">
+        <p>Your thesis is due to be reviewed</p>
+    </div>
+
+    <div th:if="${thesis.reviewConclusion == T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
+        <p>Your thesis is currently under review.</p>
+    </div>
+</body>
+</html>
