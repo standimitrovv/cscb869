@@ -4,7 +4,10 @@
     <title>Home</title>
 </head>
 <body>
-<h1>Welcome to the Home Page!</h1>
 <a th:href="@{/session/logout}">Logout</a>
+
+<div th:if="${userRole == 'ROLE_LECTURER'}">
+    <a th:href="@{/thesisRequests}" class="btn btn-primary">Create a Thesis Request</a>
+</div>
 </body>
 </html>

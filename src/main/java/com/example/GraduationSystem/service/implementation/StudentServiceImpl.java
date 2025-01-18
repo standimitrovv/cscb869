@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +33,16 @@ public class StudentServiceImpl implements StudentService {
 
         Student student = new Student();
         student.setName(name);
-        student.setFacultyNumber(UUID.randomUUID().toString());
+        student.setFacultyNumber(this.generateFacultyNumber());
         student.setUser(user);
 
         return this.studentRepository.save(student);
+    }
+
+    @Override
+    public Student findByFacultyNumber(String facultyNumber) {
+        return this.studentRepository.findByFacultyNumber(facultyNumber)
+                .orElseThrow(() -> new IllegalArgumentException("No student found with faculty number: " + facultyNumber));
     }
 
     public List<StudentDtoResponse> getStudents(){
@@ -65,5 +71,14 @@ public class StudentServiceImpl implements StudentService {
 
     private StudentDtoResponse mapToDtoResponse(Student student){
         return this.modelMapper.map(student, StudentDtoResponse.class);
+    }
+
+    private String generateFacultyNumber() {
+        Random random = new Random();
+        StringBuilder facultyNumber = new StringBuilder("f");
+        for (int i = 0; i < 7; i++) {
+            facultyNumber.append(random.nextInt(10));
+        }
+        return facultyNumber.toString();
     }
 }

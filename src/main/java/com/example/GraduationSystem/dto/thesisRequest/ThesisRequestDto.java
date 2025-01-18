@@ -29,8 +29,8 @@ public class ThesisRequestDto {
     @Size(min = 5, message = "The technologies must be at least 5 characters long!")
     private String technologies;
 
-    @NotNull(message = "Student ID is required!")
-    private int studentId;
+    @NotBlank(message = "Student's faculty number is required!")
+    private String studentFacultyNumber;
 
     @NotNull(message = "Supervisor ID is required!")
     private int supervisorId;

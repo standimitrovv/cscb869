@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thesis Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4 d-flex flex-column">
+<div class="mt-3 d-flex gap-2">
+    <a th:href="@{/home}">Home</a>
+</div>
+
+<div class="container mt-5 w-25">
+    <h1 class="text-center mb-4">Thesis Application Form</h1>
+    <form th:action="@{/thesisRequests}" th:object="${thesisRequest}" method="post" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="topic" class="form-label">Thesis Topic</label>
+            <input type="text" id="topic" name="topic" th:field="*{topic}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="goal" class="form-label">Goal of the Thesis</label>
+            <textarea id="goal" name="goal" th:field="*{goal}" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="tasks" class="form-label">Tasks to Achieve the Goal</label>
+            <textarea id="tasks" name="tasks" th:field="*{tasks}" class="form-control" rows="3" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="technologies" class="form-label">Technologies to Be Used</label>
+            <textarea id="technologies" name="technologies" th:field="*{technologies}" class="form-control" rows="2" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="studentFacultyNumber" class="form-label">Student Faculty Number</label>
+            <input type="text" id="studentFacultyNumber" name="studentFacultyNumber" th:field="*{studentFacultyNumber}" class="form-control" required>
+        </div>
+
+        <input type="hidden" name="supervisorId" th:value="${supervisorId}">
+
+        <button type="submit" class="btn btn-primary w-100">Submit Application</button>
+    </form>
+
+    <div th:if="${errorMessage}" style="color: red;">
+        <p th:text="${errorMessage}"></p>
+    </div>
+</div>
+</body>
+</html>

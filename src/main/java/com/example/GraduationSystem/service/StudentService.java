@@ -9,6 +9,8 @@ import java.util.List;
 public interface StudentService {
     Student createStudent(String name, User user);
 
+    Student findByFacultyNumber(String facultyNumber);
+
     List<StudentDtoResponse> getStudents();
 
     StudentDtoResponse getStudent(int studentId);

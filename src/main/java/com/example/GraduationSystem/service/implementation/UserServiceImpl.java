@@ -2,6 +2,7 @@ package com.example.GraduationSystem.service.implementation;
 
 import com.example.GraduationSystem.dto.session.UserDto;
 import com.example.GraduationSystem.dto.session.UserDtoResponse;
+import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.user.User;
 import com.example.GraduationSystem.repository.UserRepository;
 import com.example.GraduationSystem.service.PasswordService;
@@ -52,5 +53,11 @@ public class UserServiceImpl implements UserService {
 
     public UserDtoResponse mapToDtoResponse(User user) {
         return this.modelMapper.map(user, UserDtoResponse.class);
+    }
+
+    @Override
+    public Lecturer findLecturerByEmail(String email) {
+        return this.userRepository.findLecturerByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Lecturer with email: " + email + " was not found"));
     }
 }

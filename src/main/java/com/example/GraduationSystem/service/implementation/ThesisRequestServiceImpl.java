@@ -54,8 +54,8 @@ public class ThesisRequestServiceImpl implements ThesisRequestService {
 
     @Override
     public ThesisRequestDtoResponse createThesisRequest(ThesisRequestDto thesisRequestDto) {
-        Student student = studentRepository.findById(thesisRequestDto.getStudentId())
-                .orElseThrow(() -> new IllegalArgumentException("Student not found with ID: " + thesisRequestDto.getStudentId()));
+        Student student = studentRepository.findByFacultyNumber(thesisRequestDto.getStudentFacultyNumber())
+                .orElseThrow(() -> new IllegalArgumentException("Student not found with Faculty number: " + thesisRequestDto.getStudentFacultyNumber()));
 
         Lecturer supervisor = lecturerRepository.findById(thesisRequestDto.getSupervisorId())
                 .orElseThrow(() -> new IllegalArgumentException("Supervisor not found with ID: " + thesisRequestDto.getSupervisorId()));
