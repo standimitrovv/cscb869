@@ -9,5 +9,10 @@
 <div th:if="${userRole == 'ROLE_LECTURER'}">
     <a th:href="@{/thesisRequests}" class="btn btn-primary">Create a Thesis Request</a>
 </div>
+
+<div th:if="${userRole == 'ROLE_STUDENT'}">
+    <a th:href="@{/thesisRequests/student}" class="btn btn-primary">My Thesis Requests</a>
+</div>
+
 </body>
 </html>

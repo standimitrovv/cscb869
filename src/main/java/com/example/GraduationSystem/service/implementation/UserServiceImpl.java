@@ -2,6 +2,7 @@ package com.example.GraduationSystem.service.implementation;
 
 import com.example.GraduationSystem.dto.session.UserDto;
 import com.example.GraduationSystem.dto.session.UserDtoResponse;
+import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.user.User;
 import com.example.GraduationSystem.repository.UserRepository;
@@ -59,5 +60,11 @@ public class UserServiceImpl implements UserService {
     public Lecturer findLecturerByEmail(String email) {
         return this.userRepository.findLecturerByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Lecturer with email: " + email + " was not found"));
+    }
+
+    @Override
+    public Student findStudentByEmail(String email) {
+        return this.userRepository.findStudentByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Student with email: " + email + " was not found"));
     }
 }

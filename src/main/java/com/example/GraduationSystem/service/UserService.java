@@ -2,6 +2,7 @@ package com.example.GraduationSystem.service;
 
 import com.example.GraduationSystem.dto.session.UserDto;
 import com.example.GraduationSystem.dto.session.UserDtoResponse;
+import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.user.User;
 
@@ -17,4 +18,6 @@ public interface UserService {
     UserDtoResponse mapToDtoResponse(User user);
 
     Lecturer findLecturerByEmail(String email);
+
+    Student findStudentByEmail(String email);
 }

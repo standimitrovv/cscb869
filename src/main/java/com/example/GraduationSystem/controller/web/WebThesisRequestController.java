@@ -1,6 +1,8 @@
 package com.example.GraduationSystem.controller.web;
 
 import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDto;
+import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDtoResponse;
+import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.service.LecturerService;
 import com.example.GraduationSystem.service.StudentService;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/thesisRequests")
@@ -56,4 +60,20 @@ public class WebThesisRequestController {
             return "thesisRequestForm";
         }
     }
+
+    @GetMapping("/student")
+    public String getStudentThesisRequests(Model model) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Student student = this.userService.findStudentByEmail(email);
+
+        if (student == null) {
+            throw new RuntimeException("Student not found");
+        }
+
+        List<ThesisRequestDtoResponse> thesisRequests = thesisRequestService.getStudentThesisRequests(student.getId());
+        model.addAttribute("thesisRequests", thesisRequests);
+
+        return "studentThesisRequests";
+    }
+
 }
