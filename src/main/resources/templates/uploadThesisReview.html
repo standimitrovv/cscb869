@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Upload Review for: <span th:text="${thesis.title}"></span></h1>
+
+    <form th:action="@{/thesisReviews/upload(thesisId=${thesis.id})}" th:object="${thesisReview}" method="post">
+        <textarea th:field="*{content}" placeholder="Write your review"></textarea>
+
+        <select th:field="*{conclusion}">
+            <option value="POSITIVE">Positive</option>
+            <option value="NEGATIVE">Negative</option>
+        </select>
+        <button type="submit">Submit Review</button>
+    </form>
+
+</body>
+</html>

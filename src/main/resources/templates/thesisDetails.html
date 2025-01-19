@@ -15,20 +15,35 @@
         <p><strong>Upload date:</strong> <span th:text="${thesis.uploadDate}"></span></p>
     </div>
 
-    <div th:if="${thesis.reviewDate != null && thesis.reviewConclusion != T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
-        <h3>Review</h3>
-        <p><strong>Reviewer:</strong> <span th:text="${thesis.reviewer}"></span></p>
-        <p><strong>Review Date:</strong> <span th:text="${thesis.reviewDate}"></span></p>
-        <p><strong>Review:</strong> <span th:text="${thesis.reviewContent}"></span></p>
-        <p><strong>Conclusion:</strong> <span th:text="${thesis.reviewConclusion}"></span></p>
+    <div th:if="${userRole == 'ROLE_STUDENT'}">
+        <div th:if="${thesis.reviewDate != null && thesis.reviewConclusion != T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
+            <h3>Review</h3>
+            <p><strong>Reviewer:</strong> <span th:text="${thesis.reviewer}"></span></p>
+            <p><strong>Review Date:</strong> <span th:text="${thesis.reviewDate}"></span></p>
+            <p><strong>Review:</strong> <span th:text="${thesis.reviewContent}"></span></p>
+            <p><strong>Conclusion:</strong> <span th:text="${thesis.reviewConclusion}"></span></p>
+        </div>
+
+        <div th:if="${thesis.reviewDate == null}">
+            <p>Your thesis is due to be reviewed</p>
+        </div>
+
+        <div th:if="${thesis.reviewConclusion == T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
+            <p>Your thesis is currently under review.</p>
+        </div>
     </div>
 
-    <div th:if="${thesis.reviewDate == null}">
-        <p>Your thesis is due to be reviewed</p>
+    <div th:if="${userRole == 'ROLE_LECTURER'}">
+        <form th:if="${!isReviewer}" th:action="@{/thesisReviews/assign}" method="post">
+            <input type="hidden" name="thesisId" th:value="${thesis.id}" />
+            <button type="submit">Assign yourself as Reviewer</button>
+        </form>
+
+        <form th:if="${isReviewer}" th:action="@{/thesisReviews/upload}" method="get">
+            <input type="hidden" name="thesisId" th:value="${thesis.id}" />
+            <button type="submit">Upload Review</button>
+        </form>
     </div>
 
-    <div th:if="${thesis.reviewConclusion == T(com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion).PENDING}">
-        <p>Your thesis is currently under review.</p>
-    </div>
 </body>
 </html>

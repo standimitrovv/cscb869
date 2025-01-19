@@ -15,4 +15,8 @@ public interface ThesisService {
     List<ThesisDtoResponse> getThesesByGradeRange(double minGrade, double maxGrade);
 
     List<ThesisDtoResponse> getStudentTheses(int studentId);
+
+    List<ThesisDtoResponse> getPendingLecturerTheses(int lecturerId);
+
+    List<ThesisDtoResponse> getThesesWaitingForReview();
 }

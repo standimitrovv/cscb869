@@ -3,6 +3,7 @@ package com.example.GraduationSystem.service.implementation;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDto;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
 import com.example.GraduationSystem.dto.thesisReview.UpdateThesisReviewConclusionDto;
+import com.example.GraduationSystem.dto.thesisReview.UpdateThesisReviewDto;
 import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,6 +28,8 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
     private final LecturerRepository lecturerRepository;
 
     private final ModelMapper modelMapper;
+
+    private final String INITIAL_REVIEW_CONTENT = "Temporary Content";
 
     public ThesisReviewServiceImpl(ThesisReviewRepository thesisReviewRepository, ThesisRepository thesisRepository, LecturerRepository lecturerRepository) {
         this.thesisReviewRepository = thesisReviewRepository;
@@ -47,7 +51,7 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
 
         ThesisReview review = new ThesisReview();
 
-        review.setContent(thesisReviewDto.getContent());
+        review.setContent(this.INITIAL_REVIEW_CONTENT);
         review.setConclusion(ThesisReviewConclusion.PENDING);
         review.setUploadDate(LocalDate.now());
         review.setThesis(thesis);
@@ -57,12 +61,35 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
     }
 
     @Override
+    public void updateThesisReview(int thesisReviewId, UpdateThesisReviewDto dto) {
+        ThesisReview review = this.thesisReviewRepository.findById(thesisReviewId)
+                .orElseThrow(() -> new IllegalArgumentException("A thesis review not found with ID: " + thesisReviewId));
+
+        if(Objects.equals(dto.getContent(), this.INITIAL_REVIEW_CONTENT) || review.getConclusion() == dto.getConclusion()) {
+            throw new IllegalArgumentException("You have to provide a different conclusion than the current one");
+        }
+
+        if(Objects.equals(review.getConclusion().toString(), this.INITIAL_REVIEW_CONTENT)) {
+            throw new Error("You have to set the content first before updating the conclusion");
+        }
+
+        review.setConclusion(dto.getConclusion());
+        review.setContent(dto.getContent());
+
+        this.thesisReviewRepository.save(review);
+    }
+
+    @Override
     public void updateThesisReviewConclusion(int thesisReviewId, UpdateThesisReviewConclusionDto thesisReviewConclusionDto) {
         ThesisReview review = this.thesisReviewRepository.findById(thesisReviewId)
                 .orElseThrow(() -> new IllegalArgumentException("A thesis review not found with ID: " + thesisReviewId));
 
         if(review.getConclusion() == thesisReviewConclusionDto.getConclusion()) {
             throw new IllegalArgumentException("You have to provide a different conclusion than the current one!");
+        }
+
+        if(Objects.equals(review.getConclusion().toString(), this.INITIAL_REVIEW_CONTENT)) {
+            throw new Error("You have to set the content first before updating the conclusion");
         }
 
         review.setConclusion(thesisReviewConclusionDto.getConclusion());

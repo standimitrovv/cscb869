@@ -47,7 +47,7 @@
     <thead>
     <tr>
       <th>Title</th>
-      <th>Status</th>
+      <th th:if="${userRole == 'ROLE_LECTURER'}">Student</th>
       <th>Submission Date</th>
       <th>Action</th>
     </tr>
@@ -55,7 +55,7 @@
     <tbody>
     <tr th:each="thesis : ${theses}">
       <td th:text="${thesis.title}"></td>
-      <td th:text="${thesis.content}"></td>
+      <td th:if="${userRole == 'ROLE_LECTURER' && thesis.thesisRequest.student.name != null}" th:text="${thesis.thesisRequest.student.name}"></td>
       <td th:text="${thesis.uploadDate}"></td>
       <td>
         <a th:href="@{/theses/details/{id}(id=${thesis.id})}" class="btn btn-primary">View Details</a>

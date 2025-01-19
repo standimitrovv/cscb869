@@ -12,15 +12,14 @@
 <body>
 <a th:href="@{/session/logout}">Logout</a>
 
-<div th:if="${userRole == 'ROLE_LECTURER'}">
+<div th:if="${userRole == 'ROLE_LECTURER'}" class="d-flex flex-column gap-3 w-50">
     <a th:href="@{/thesisRequests}" class="btn btn-primary">Create a Thesis Request</a>
+    <a th:href="@{/theses/unreviewed}" class="btn btn-primary">View All Unreviewed Theses</a>
+    <a th:href="@{/theses/lecturer/pending}" class="btn btn-primary">View My Pending Unreviewed Theses</a>
 </div>
 
-<div th:if="${userRole == 'ROLE_STUDENT'}">
+<div th:if="${userRole == 'ROLE_STUDENT'}" class="d-flex flex-column gap-3 w-50">
     <a th:href="@{/thesisRequests/student}" class="btn btn-primary">My Thesis Requests</a>
-</div>
-
-<div th:if="${userRole == 'ROLE_STUDENT'}">
     <a th:href="@{/theses}" class="btn btn-primary">My Theses</a>
 </div>
 

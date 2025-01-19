@@ -5,6 +5,7 @@ import com.example.GraduationSystem.dto.thesis.ThesisDtoResponse;
 import com.example.GraduationSystem.dto.thesis.WebThesisDtoResponse;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
 import com.example.GraduationSystem.model.Student;
+import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.service.ThesisReviewService;
 import com.example.GraduationSystem.service.ThesisService;
 import com.example.GraduationSystem.service.UserService;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Controller
@@ -32,8 +34,7 @@ public class WebThesisController {
 
     @GetMapping
     public String getStudentTheses(Model model) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Student student = this.userService.findStudentByEmail(email);
+        Student student = this.getStudent();
 
         if (student == null) {
             throw new RuntimeException("Student not found");
@@ -41,12 +42,13 @@ public class WebThesisController {
 
         List<ThesisDtoResponse> theses = thesisService.getStudentTheses(student.getId());
         model.addAttribute("theses", theses);
+        model.addAttribute("userRole", this.getUserRole());
 
-        return "studentTheses";
+        return "theses";
     }
 
     @GetMapping("/details/{id}")
-    public String getStudentThesis(@PathVariable int id, Model model) {
+    public String getThesisDetails(@PathVariable int id, Model model) {
         ThesisDtoResponse thesis = this.thesisService.getThesis(id);
 
         if (thesis == null) {
@@ -69,6 +71,14 @@ public class WebThesisController {
         }
 
         model.addAttribute("thesis", webThesisDtoResponse);
+        String userRole = this.getUserRole();
+        model.addAttribute("userRole", userRole);
+
+        if(Objects.equals(userRole, "ROLE_LECTURER")) {
+            boolean userIsReviewer = review.isPresent() && review.get().getReviewer().getId() == this.getLecturer().getId();
+            model.addAttribute("isReviewer", userIsReviewer);
+        }
+
         return "thesisDetails";
     }
 
@@ -91,5 +101,41 @@ public class WebThesisController {
             model.addAttribute("errorMessage", e.getMessage());
             return "uploadThesis";
         }
+    }
+
+    @GetMapping("/unreviewed")
+    public String showThesesWaitingForReview(Model model) {
+        List<ThesisDtoResponse> theses = this.thesisService.getThesesWaitingForReview();
+
+        model.addAttribute("theses", theses);
+        model.addAttribute("userRole", this.getUserRole());
+
+        return "theses";
+    }
+
+    @GetMapping("/lecturer/pending")
+    public String showPendingLecturerTheses(Model model) {
+        List<ThesisDtoResponse> theses = this.thesisService.getPendingLecturerTheses(this.getLecturer().getId());
+
+        model.addAttribute("theses", theses);
+        model.addAttribute("userRole", this.getUserRole());
+        model.addAttribute("isReviewer", true);
+
+        return "theses";
+    }
+
+    private String getUserRole() {
+        return SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().iterator().next().getAuthority();
+    }
+
+    private Lecturer getLecturer() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return this.userService.findLecturerByEmail(email);
+    }
+
+    private Student getStudent() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return this.userService.findStudentByEmail(email);
     }
 }
