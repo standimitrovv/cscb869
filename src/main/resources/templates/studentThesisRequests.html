@@ -4,73 +4,145 @@
   <title>Thesis Requests</title>
 
   <style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        font-size: 18px;
-        text-align: left;
-    }
-    th, td {
-        border: 1px solid #ddd;
-        padding: 12px 15px;
-    }
-    th {
-        background-color: #4CAF50;
-        color: white;
-    }
-    tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }
-    tr:hover {
-        background-color: #ddd;
-    }
-    a {
-        text-decoration: none;
-        color: white;
-        background-color: #4CAF50;
-        padding: 8px 12px;
-        border-radius: 4px;
-    }
-    a:hover {
-        background-color: #45a049;
-    }
+    body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        a:hover {
+            color: #2980b9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table thead th {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table tbody td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+
+        table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        table tbody tr:hover {
+            background-color: #eaf2fa;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            color: #fff;
+        }
+
+        .mt-2 {
+            margin-top: 20px;
+        }
+
+        .status-approved {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .status-rejected {
+            color: red;
+            font-weight: bold;
+        }
   </style>
 </head>
 <body>
 
-<div class="mt-2">
-  <a th:href="@{/home}">Home</a>
-</div>
+<div class="container">
 
-<table>
-  <thead>
-  <tr>
-    <th>Topic</th>
-    <th>Goal</th>
-    <th>Tasks</th>
-    <th>Technologies</th>
-    <th>Supervisor</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="request : ${thesisRequests}">
-    <td th:text="${request.topic}"></td>
-    <td th:text="${request.goal}"></td>
-    <td th:text="${request.tasks}"></td>
-    <td th:text="${request.technologies}"></td>
-    <td th:text="${request.supervisor.name}"></td>
-    <td th:text="${request.status}"></td>
-    <td>
-      <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED}"
-         th:href="@{/theses/upload(requestId=${request.id})}">
-        Upload Thesis
-      </a>
-    </td>
-  </tr>
-  </tbody>
-</table>
+  <div class="mt-2">
+    <a th:href="@{/home}">Home</a>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th>Topic</th>
+      <th>Goal</th>
+      <th>Tasks</th>
+      <th>Technologies</th>
+      <th>Supervisor</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="request : ${thesisRequests}">
+      <td th:text="${request.topic}"></td>
+      <td th:text="${request.goal}"></td>
+      <td th:text="${request.tasks}"></td>
+      <td th:text="${request.technologies}"></td>
+      <td th:text="${request.supervisor.name}"></td>
+      <td>
+        <span th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED}" class="status-approved" th:text="${request.status}"></span>
+        <span th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).PENDING}" class="status-pending" th:text="${request.status}"></span>
+        <span th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).REJECTED}" class="status-rejected" th:text="${request.status}"></span>
+      </td>
+      <td>
+        <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED}"
+           th:href="@{/theses/upload(requestId=${request.id})}"
+           class="btn"
+        >
+          Upload Thesis
+        </a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
 </body>
 </html>
