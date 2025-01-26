@@ -50,4 +50,15 @@ public interface ThesisDefenseRepository extends JpaRepository<ThesisDefense, In
         WHERE l.id = :lecturerId AND tdg.grade >= 3.0
     """)
     long countSuccessfulDefensesByLecturer(@Param("lecturerId") int lecturerId);
+
+    @Query(value = """
+        SELECT td.id, td.date, td.status, tdg.grade
+        FROM thesis_defenses AS td
+        JOIN theses AS t
+        ON t.defense_id = td.id
+        JOIN thesis_defense_grades AS tdg
+        ON tdg.defense_id = td.id
+        WHERE t.id = :thesisId
+    """, nativeQuery = true)
+    List<Object[]> findThesisDefensesByThesisId(@Param("thesisId") int thesisId);
 }

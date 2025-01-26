@@ -1,42 +1,43 @@
 package com.example.GraduationSystem.service.implementation;
 
 import com.example.GraduationSystem.dto.student.StudentDtoResponse;
-import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDto;
-import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDtoResponse;
-import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseGradeDto;
-import com.example.GraduationSystem.dto.thesisDefense.UpdateThesisDefenseStatusDto;
+import com.example.GraduationSystem.dto.thesisDefense.*;
+import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
 import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.Thesis;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefense;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseGrade;
 import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseStatus;
-import com.example.GraduationSystem.repository.LecturerRepository;
-import com.example.GraduationSystem.repository.StudentRepository;
-import com.example.GraduationSystem.repository.ThesisDefenseRepository;
-import com.example.GraduationSystem.repository.ThesisRepository;
+import com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion;
+import com.example.GraduationSystem.repository.*;
 import com.example.GraduationSystem.service.ThesisDefenseService;
+import com.example.GraduationSystem.service.ThesisReviewService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ThesisDefenseServiceImpl implements ThesisDefenseService {
     private final ThesisDefenseRepository thesisDefenseRepository;
+    private final ThesisRepository thesisRepository;
+    private final ThesisReviewService thesisReviewService;
+
     private final StudentRepository studentRepository;
     private final LecturerRepository lecturerRepository;
-    private final ThesisRepository thesisRepository;
 
     private final ModelMapper modelMapper;
 
-    public ThesisDefenseServiceImpl(ThesisDefenseRepository thesisDefenseRepository, StudentRepository studentRepository, LecturerRepository lecturerRepository, ThesisRepository thesisRepository) {
+    public ThesisDefenseServiceImpl(ThesisDefenseRepository thesisDefenseRepository, StudentRepository studentRepository, LecturerRepository lecturerRepository, ThesisRepository thesisRepository, ThesisReviewService thesisReviewService) {
         this.thesisDefenseRepository = thesisDefenseRepository;
         this.studentRepository = studentRepository;
         this.lecturerRepository = lecturerRepository;
         this.thesisRepository = thesisRepository;
+        this.thesisReviewService = thesisReviewService;
 
         this.modelMapper = new ModelMapper();
     }
@@ -58,19 +59,37 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
             throw new IllegalArgumentException("Some theses were not found.");
         }
 
+        boolean hasThesisDefenses = !(theses.stream().filter((t) -> t.getDefense() != null).toList().isEmpty());
+        if(hasThesisDefenses) {
+           throw new IllegalArgumentException("Some of the theses you provided already have an assigned defense");
+        }
+
+        theses.forEach((t) -> {
+            Optional<ThesisReviewDtoResponse> thesisReview = this.thesisReviewService.getThesisReviewByThesisId(t.getId());
+            if(thesisReview.isEmpty()) {
+                throw new IllegalArgumentException("Some of the theses you provided must go through a review first");
+            }
+
+            if(thesisReview.get().getConclusion() != ThesisReviewConclusion.POSITIVE) {
+                throw new IllegalArgumentException("Some of the theses you provided need a review approval before creating a defense");
+            }
+        });
+
         ThesisDefense defense = new ThesisDefense();
 
         defense.setDate(LocalDate.now());
         defense.setStudents(students);
         defense.setLecturers(lecturers);
         defense.setStatus(ThesisDefenseStatus.PLANNED);
-
-        for (Thesis thesis : theses) {
-            thesis.setDefense(defense);
-        }
-
         defense.setTheses(theses);
         ThesisDefense savedDefense = this.thesisDefenseRepository.save(defense);
+
+        for (Thesis thesis : theses) {
+            thesis.setDefense(savedDefense);
+            thesisRepository.save(thesis);
+        }
+
+        savedDefense.setTheses(theses);
 
         return this.mapToDtoResponse(savedDefense);
     }
@@ -235,6 +254,24 @@ public class ThesisDefenseServiceImpl implements ThesisDefenseService {
         if(!isLecturerAssignedToAnyDefense) throw new IllegalArgumentException("A lecturer with id: " + lecturerId + " is not assigned to any thesis defense.");
 
         return this.thesisDefenseRepository.countSuccessfulDefensesByLecturer(lecturerId);
+    }
+
+    @Override
+    public Optional<ThesisDefenseDetailsDtoResponse> getThesisDefenseDetails(int thesisId) {
+        Optional<Object[]> defense = this.thesisDefenseRepository.findThesisDefensesByThesisId(thesisId).stream().findFirst();
+
+        if(defense.isEmpty()) {
+            return Optional.empty();
+        }
+
+        java.sql.Date sqlDate = (java.sql.Date) defense.get()[1];
+
+        return Optional.of(new ThesisDefenseDetailsDtoResponse(
+                (int) defense.get()[0],
+                (LocalDate) sqlDate.toLocalDate(),
+                ThesisDefenseStatus.valueOf((String) defense.get()[2]),
+                (double) defense.get()[3]
+        ));
     }
 
     private ThesisDefenseDtoResponse mapToDtoResponse(ThesisDefense defense){

@@ -3,9 +3,11 @@ package com.example.GraduationSystem.controller.web;
 import com.example.GraduationSystem.dto.thesis.ThesisDto;
 import com.example.GraduationSystem.dto.thesis.ThesisDtoResponse;
 import com.example.GraduationSystem.dto.thesis.WebThesisDtoResponse;
+import com.example.GraduationSystem.dto.thesisDefense.ThesisDefenseDetailsDtoResponse;
 import com.example.GraduationSystem.dto.thesisReview.ThesisReviewDtoResponse;
 import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
+import com.example.GraduationSystem.service.ThesisDefenseService;
 import com.example.GraduationSystem.service.ThesisReviewService;
 import com.example.GraduationSystem.service.ThesisService;
 import com.example.GraduationSystem.service.UserService;
@@ -24,11 +26,13 @@ import java.util.Optional;
 public class WebThesisController {
     private final ThesisService thesisService;
     private final ThesisReviewService thesisReviewService;
+    private final ThesisDefenseService thesisDefenseService;
     private final UserService userService;
 
-    public WebThesisController(ThesisService thesisService, ThesisReviewService thesisReviewService, UserService userService) {
+    public WebThesisController(ThesisService thesisService, ThesisReviewService thesisReviewService, ThesisDefenseService thesisDefenseService, UserService userService) {
         this.thesisService = thesisService;
         this.thesisReviewService = thesisReviewService;
+        this.thesisDefenseService = thesisDefenseService;
         this.userService = userService;
     }
 
@@ -70,14 +74,24 @@ public class WebThesisController {
             webThesisDtoResponse.setReviewer(tr.getReviewer().getName());
         }
 
-        model.addAttribute("thesis", webThesisDtoResponse);
-        String userRole = this.getUserRole();
-        model.addAttribute("userRole", userRole);
+        Optional<ThesisDefenseDetailsDtoResponse> defense = this.thesisDefenseService.getThesisDefenseDetails(thesis.getId());
+        if(defense.isPresent()) {
+            ThesisDefenseDetailsDtoResponse defenseDetails = defense.get();
+            webThesisDtoResponse.setDefenseDate(defenseDetails.getDate());
+            webThesisDtoResponse.setDefenseStatus(defenseDetails.getStatus());
+            webThesisDtoResponse.setDefenseGrade(defenseDetails.getGrade());
+        }
 
+        model.addAttribute("thesis", webThesisDtoResponse);
+
+        String userRole = this.getUserRole();
         if(Objects.equals(userRole, "ROLE_LECTURER")) {
             boolean userIsReviewer = review.isPresent() && review.get().getReviewer().getId() == this.getLecturer().getId();
             model.addAttribute("isReviewer", userIsReviewer);
         }
+
+        model.addAttribute("userRole", userRole);
+
 
         return "thesisDetails";
     }

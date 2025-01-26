@@ -1,5 +1,6 @@
 package com.example.GraduationSystem.dto.thesis;
 
+import com.example.GraduationSystem.model.thesisDefense.ThesisDefenseStatus;
 import com.example.GraduationSystem.model.thesisReview.ThesisReviewConclusion;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,4 +29,10 @@ public class WebThesisDtoResponse {
     private ThesisReviewConclusion reviewConclusion;
 
     private String reviewer;
+
+    private LocalDate defenseDate;
+
+    private ThesisDefenseStatus defenseStatus;
+
+    private double defenseGrade;
 }

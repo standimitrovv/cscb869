@@ -22,13 +22,13 @@
             border-radius: 10px;
         }
 
-        a {
+        .home-btn {
             text-decoration: none;
             color: #3498db;
             font-weight: bold;
         }
 
-        a:hover {
+        .home-btn:hover {
             color: #2980b9;
         }
 
@@ -78,6 +78,7 @@
 
         .btn:hover {
             background-color: #2980b9;
+            color: #fff;
         }
 
         .mt-2 {
@@ -89,7 +90,7 @@
   <div class="container">
 
     <div class="mt-2">
-      <a th:href="@{/home}">Home</a>
+      <a th:href="@{/home}" class="home-btn">Home</a>
     </div>
 
     <table>
