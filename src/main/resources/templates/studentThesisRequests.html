@@ -133,11 +133,17 @@
         <span th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).REJECTED}" class="status-rejected" th:text="${request.status}"></span>
       </td>
       <td>
-        <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED}"
+        <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED && thesesByRequest[request.id].uploadDate == null}"
            th:href="@{/theses/upload(requestId=${request.id})}"
            class="btn"
         >
           Upload Thesis
+        </a>
+        <a th:if="${request.status == T(com.example.GraduationSystem.model.thesisRequest.ThesisRequestStatus).APPROVED && thesesByRequest[request.id].uploadDate != null}"
+           th:href="@{/theses/details/{id}(id=${thesesByRequest[request.id].id})}"
+           class="btn"
+        >
+          See Thesis
         </a>
       </td>
     </tr>

@@ -101,6 +101,14 @@ public class ThesisServiceImpl implements ThesisService {
                 .toList();
     }
 
+    @Override
+    public List<ThesisDtoResponse> getThesesByThesisRequestId(int thesisRequestId) {
+        return thesisRepository.findThesesByThesisRequestId(thesisRequestId)
+                .stream()
+                .map(this::mapToDtoResponse)
+                .collect(Collectors.toList());
+    }
+
 
     private ThesisDtoResponse mapToDtoResponse(Thesis thesis){
         ThesisDtoResponse dto = this.modelMapper.map(thesis, ThesisDtoResponse.class);

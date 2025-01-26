@@ -35,4 +35,7 @@ public interface ThesisRepository extends JpaRepository<Thesis, Integer> {
 
     @Query("SELECT t FROM Thesis t LEFT JOIN ThesisReview r ON t = r.thesis WHERE r.conclusion = 'PENDING' AND r.reviewer.id = :lecturerId")
     List<Thesis> findAllLecturerUnreviewedTheses(@Param("lecturerId") int lecturerId);
+
+    @Query("SELECT t FROM Thesis t WHERE t.thesisRequest.id = :thesisRequestId")
+    List<Thesis> findThesesByThesisRequestId(@Param("thesisRequestId") int thesisRequestId);
 }

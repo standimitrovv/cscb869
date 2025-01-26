@@ -19,4 +19,6 @@ public interface ThesisService {
     List<ThesisDtoResponse> getPendingLecturerTheses(int lecturerId);
 
     List<ThesisDtoResponse> getThesesWaitingForReview();
+
+    List<ThesisDtoResponse> getThesesByThesisRequestId(int thesisRequestId);
 }

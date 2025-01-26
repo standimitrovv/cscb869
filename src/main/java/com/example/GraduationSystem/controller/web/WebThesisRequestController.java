@@ -1,14 +1,12 @@
 package com.example.GraduationSystem.controller.web;
 
+import com.example.GraduationSystem.dto.thesis.ThesisDtoResponse;
 import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDto;
 import com.example.GraduationSystem.dto.thesisRequest.ThesisRequestDtoResponse;
 import com.example.GraduationSystem.model.Student;
 import com.example.GraduationSystem.model.lecturer.Lecturer;
 import com.example.GraduationSystem.model.user.UserRole;
-import com.example.GraduationSystem.service.LecturerService;
-import com.example.GraduationSystem.service.StudentService;
-import com.example.GraduationSystem.service.ThesisRequestService;
-import com.example.GraduationSystem.service.UserService;
+import com.example.GraduationSystem.service.*;
 import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,15 +18,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/thesisRequests")
 public class WebThesisRequestController {
     private final ThesisRequestService thesisRequestService;
+    private final ThesisService thesisService;
     private final UserService userService;
 
-    public WebThesisRequestController(ThesisRequestService thesisRequestService, UserService userService) {
+    public WebThesisRequestController(ThesisRequestService thesisRequestService, ThesisService thesisService, UserService userService) {
         this.thesisRequestService = thesisRequestService;
+        this.thesisService = thesisService;
         this.userService = userService;
     }
 
@@ -85,6 +87,16 @@ public class WebThesisRequestController {
 
         List<ThesisRequestDtoResponse> thesisRequests = thesisRequestService.getStudentThesisRequests(student.getId());
         model.addAttribute("thesisRequests", thesisRequests);
+
+        Map<Integer, ThesisDtoResponse> thesesByRequest = thesisRequests.stream()
+                .collect(Collectors.toMap(
+                        ThesisRequestDtoResponse::getId,
+                        request -> {
+                            List<ThesisDtoResponse> theses= thesisService.getThesesByThesisRequestId(request.getId());
+                            return theses.isEmpty() ? new ThesisDtoResponse() : theses.getFirst();
+                        }
+                ));
+        model.addAttribute("thesesByRequest", thesesByRequest);
 
         return "studentThesisRequests";
     }
