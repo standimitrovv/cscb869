@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ThesisReviewService {
     ThesisReviewDtoResponse createReview(ThesisReviewDto thesisReviewDto);
 
-    void updateThesisReview(int thesisReviewId, UpdateThesisReviewDto dto);
+    ThesisReviewDtoResponse updateThesisReview(int thesisReviewId, UpdateThesisReviewDto dto);
 
     void updateThesisReviewConclusion(int thesisReviewId, UpdateThesisReviewConclusionDto thesisReviewConclusionDto);
 

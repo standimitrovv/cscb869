@@ -27,10 +27,13 @@
             border-radius: 10px;
         }
 
+        .form-group {
+            margin-bottom: 24px;
+        }
+
         textarea {
             width: 100%;
             height: 150px;
-            margin-bottom: 15px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -61,20 +64,32 @@
         button:hover {
             background-color: #2980b9;
         }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <h1>Upload Review for: <span th:text="${thesis.title}"></span></h1>
 
     <form th:action="@{/thesisReviews/upload(thesisId=${thesis.id})}" th:object="${thesisReview}" method="post">
-        <textarea th:field="*{content}" placeholder="Write your review"></textarea>
+        <div class="form-group">
+            <textarea id="content" name="content" th:field="*{content}" placeholder="Write your review" required></textarea>
+            <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}" class="error-message"></span>
+        </div>
 
         <select th:field="*{conclusion}">
             <option value="POSITIVE">Positive</option>
             <option value="NEGATIVE">Negative</option>
         </select>
+
         <button type="submit">Submit Review</button>
     </form>
 
+    <div th:if="${errorMessage}" style="margin-top: 16px;">
+        <p th:text="${errorMessage}"></p>
+    </div>
 </body>
 </html>

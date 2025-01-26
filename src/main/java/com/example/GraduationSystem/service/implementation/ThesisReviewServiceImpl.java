@@ -61,7 +61,7 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
     }
 
     @Override
-    public void updateThesisReview(int thesisReviewId, UpdateThesisReviewDto dto) {
+    public ThesisReviewDtoResponse updateThesisReview(int thesisReviewId, UpdateThesisReviewDto dto) {
         ThesisReview review = this.thesisReviewRepository.findById(thesisReviewId)
                 .orElseThrow(() -> new IllegalArgumentException("A thesis review not found with ID: " + thesisReviewId));
 
@@ -76,7 +76,7 @@ public class ThesisReviewServiceImpl implements ThesisReviewService {
         review.setConclusion(dto.getConclusion());
         review.setContent(dto.getContent());
 
-        this.thesisReviewRepository.save(review);
+        return this.mapToDtoResponse(this.thesisReviewRepository.save(review));
     }
 
     @Override

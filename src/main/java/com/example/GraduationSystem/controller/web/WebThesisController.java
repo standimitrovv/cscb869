@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -98,23 +99,27 @@ public class WebThesisController {
 
     @GetMapping("/upload")
     public String showUploadThesisForm(@RequestParam int requestId, Model model) {
-        model.addAttribute("requestId", requestId);
-        model.addAttribute("thesisDto", new ThesisDto());
-
-        return "uploadThesis";
+        return this.showUploadForm(requestId, new ThesisDto(), model);
     }
 
     @PostMapping("/upload")
     public String uploadThesis(@RequestParam int requestId,
                                @ModelAttribute("thesisDto") @Valid ThesisDto thesisDto,
+                               BindingResult result,
                                Model model) {
+        if(result.hasErrors()) {
+            model.addAttribute("errors", result.getFieldErrors());
+            return this.showUploadForm(requestId, thesisDto, model);
+        }
+
         try {
             thesisService.createThesis(requestId, thesisDto);
-            return "redirect:/theses";
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
-            return "uploadThesis";
+            return this.showUploadForm(requestId, thesisDto, model);
         }
+
+        return "redirect:/theses";
     }
 
     @GetMapping("/unreviewed")
@@ -136,6 +141,13 @@ public class WebThesisController {
         model.addAttribute("isReviewer", true);
 
         return "theses";
+    }
+
+    private String showUploadForm(int requestId, ThesisDto thesis, Model model) {
+        model.addAttribute("requestId", requestId);
+        model.addAttribute("thesisDto", thesis);
+
+        return "uploadThesis";
     }
 
     private String getUserRole() {

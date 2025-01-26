@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -41,15 +42,32 @@ public class WebThesisReviewController {
 
     @GetMapping("/upload")
     public String showUploadThesisReviewForm(@RequestParam int thesisId, Model model) {
-        ThesisDtoResponse thesis = thesisService.getThesis(thesisId);
-        model.addAttribute("thesis", thesis);
-        model.addAttribute("thesisReview", new UpdateThesisReviewDto());
-        return "uploadThesisReview";
+        return this.showUploadReviewForm(thesisId, new UpdateThesisReviewDto(), model);
     }
 
     @PostMapping("/upload")
-    public String saveReview(@ModelAttribute @Valid UpdateThesisReviewDto review, @RequestParam int thesisId) {
-        this.thesisReviewService.updateThesisReview(thesisId, review);
+    public String saveReview(@ModelAttribute("thesisReview") @Valid UpdateThesisReviewDto review, @RequestParam int thesisId, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            model.addAttribute("errors", result.getFieldErrors());
+            return this.showUploadReviewForm(thesisId, review, model);
+        }
+
+        try {
+            this.thesisReviewService.updateThesisReview(thesisId, review);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return this.showUploadReviewForm(thesisId, review, model);
+        }
+
         return "redirect:/home";
+    }
+
+    private String showUploadReviewForm(int thesisId, UpdateThesisReviewDto review, Model model) {
+        ThesisDtoResponse thesis = thesisService.getThesis(thesisId);
+
+        model.addAttribute("thesis", thesis);
+        model.addAttribute("thesisReview", review);
+
+        return "uploadThesisReview";
     }
 }
